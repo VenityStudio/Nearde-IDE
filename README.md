@@ -1,10 +1,10 @@
-# DevelNext 17
+# Nearde IDE
 
-DevelNext IDE (version 17+) with the JPPM support.
+Fork of DevelNext-17
 
 ## How to run?
 
-1. Install **Java Development Kit 10** and the last version of JPPM.
+1. Install **Java Development Kit 9** and the last version of JPPM.
 2. Prepare IDE dependencies:
 ```bash
 jppm prepare-ide
@@ -15,7 +15,7 @@ jppm start-ide
 ```
 
 ## How to build?
-1. Install **Java Development Kit 10** and the last version of JPPM.
+1. Install **Java Development Kit 9** and the last version of JPPM.
 2. Prepare IDE dependencies:
 ```bash
 jppm prepare-ide

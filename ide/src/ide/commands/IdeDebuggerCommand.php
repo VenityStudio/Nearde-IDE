@@ -33,7 +33,7 @@ class IdeDebuggerCommand extends AbstractCommand
 
     public function getName()
     {
-        return 'IDE Debugger';
+        return 'Debugger';
     }
 
     public function getCategory()
@@ -43,7 +43,7 @@ class IdeDebuggerCommand extends AbstractCommand
 
     public function getIcon()
     {
-        return "icons/star16.png";
+        return "icons/phpFile16.png";
     }
 
     public function onExecute($e = null, AbstractEditor $editor = null)
@@ -59,14 +59,15 @@ class IdeDebuggerCommand extends AbstractCommand
         $form = new UXForm();
         $form->icons->add((Ide::getImage($this->getIcon()))->image);
         $form->title = $this->getName();
-        $form->addStylesheet("./");
+        $form->addStylesheet(".theme/style.css");
+        $form->size = [600, 400];
 
         $ui = new UXVBox();
         $ui->spacing = 8;
         $ui->padding = 8;
 
         $inspector = new PHPInspector();
-        $inspector->loadDirectory("res://.theme/style.css");
+        $inspector->loadDirectory("./");
 
         $file = IdeSystem::getFile("debugger.php");
         $editor = new CodeEditor($file, 'php', [
@@ -92,11 +93,6 @@ class IdeDebuggerCommand extends AbstractCommand
                 } catch (\Throwable $throwable) {
                     (new UXError($throwable))->show();
                 }
-            }),
-            SimpleSingleCommand::makeWithText('Скрыть', 'icons/square16.png', function () use ($editor, $form) {
-                $form->hide();
-                $editor->lockHandles();
-                $this->command = null;
             })
         ]);
         $pane->spacing = 5;

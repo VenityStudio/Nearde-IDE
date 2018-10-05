@@ -121,11 +121,6 @@ class Ide extends Application
     protected $projectControlPanes = [];
 
     /**
-     * @var ServiceManager
-     */
-    protected $serviceManager = null;
-
-    /**
      * @var IdeLibrary
      */
     protected $library;

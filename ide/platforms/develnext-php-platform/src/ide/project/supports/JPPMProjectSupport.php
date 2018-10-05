@@ -199,7 +199,13 @@ class JPPMProjectSupport extends AbstractProjectSupport
         }
 
         Promise::all($promisses)->then(function () use ($project) {
-            $process = (new Process(['cmd', '/c', 'jppm', 'install'], $project->getRootDir(), Ide::get()->makeEnvironment()))
+
+            $app = ['jppm', 'install'];
+
+            if (Ide::get()->isWindows())
+                $app = ['cmd.exe', '/c', 'jppm', 'install'];
+
+            $process = (new Process($app, $project->getRootDir(), Ide::get()->makeEnvironment()))
                 ->inheritIO()->startAndWait();
 
             $newInspectDirs = $this->getVendorInspectDirs($project);

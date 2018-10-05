@@ -202,7 +202,7 @@ class CodeEditor extends AbstractEditor
         $this->mode = $mode;
         //$this->sourceFile = $mode == 'php';
 
-        $textArea = $options['textArea'] instanceof UXAbstractCodeArea ? $options['textArea'] : null;
+        $textArea = $options['textArea'] ? $options['textArea'] : null;
 
         if ($textArea === null) {
             switch ($mode) {
@@ -1009,10 +1009,10 @@ class CodeEditor extends AbstractEditor
      */
     public static function getCurrentHighlight($lang)
     {
-        $value = Ide::get()->getUserConfigValue(__CLASS__ . '#' . $lang . '.highlight', 'DevelNext-Dark');
+        $value = Ide::get()->getUserConfigValue(__CLASS__ . '#' . $lang . '.highlight', 'PhpStorm');
 
         if (!self::getHighlightFile($lang, $value)->isFile()) {
-            return 'DevelNext-Dark';
+            return 'PhpStorm';
         }
 
         return $value;

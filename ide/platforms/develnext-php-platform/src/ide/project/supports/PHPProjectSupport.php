@@ -118,6 +118,7 @@ class PHPProjectSupport extends AbstractProjectSupport
     public function onLink(Project $project)
     {
         $this->inspector = new PHPInspector();
+        $this->inspector->loadDirectory($project->getRootDir());
         $this->registerTreeMenu($project);
         $project->registerInspector('php', $this->inspector);
 

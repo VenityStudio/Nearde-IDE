@@ -39,81 +39,21 @@ class SplashForm extends AbstractIdeForm
         Logger::debug("Init form ...");
 
         $this->centerOnScreen();
-
-        $versionCode = $this->_app->getConfig()->get('app.versionCode');
         $this->version->text = $this->_app->getVersion();
+        $this->tip->text = SplashTipSystem::get(Ide::get()->getLanguage()->getCode());
 
-        if ($this->_app->isSnapshotVersion()) {
-            $effect = new UXSepiaToneEffect();
-            $effect->level = 0.5;
-            $this->image->effects->add($effect);
-
-            $effect2 = new UXColorAdjustEffect();
-            $effect2->saturation = -1;
-            $this->tipBox->effects->add($effect2);
-        }
-
-        if ($versionCode) {
-            $this->versionCode->text = str::upperFirst($versionCode);
-
-            $now = Time::now()->toString('dd-MM');
-            $specialCode = 'res://.data/img/code/special/' . $now . '.png';
-
-            if (Stream::exists($specialCode)) {
-                $versionCode = "special/$now";
-            }
-
-            $codeImg = new UXImageArea(new UXImage('res://.data/img/code/' . $versionCode . '.png'));
-            $codeImg->stretch = true;
-            $codeImg->smartStretch = true;
-            $codeImg->size = [64, 64];
-            $codeImg->position = [690 - 64 - 14, 14];
-
-            $this->add($codeImg);
-        }
-
-        $name = Ide::get()->getUserConfigValue('splash.name');
-        $avatar = Ide::get()->getUserConfigValue('splash.avatar');
-
-        if (!$name) {
-            $this->accountPane->hide();
-        } else {
-            $this->accountNameLabel->text = $name;
-
-            $image = new UXImageArea(Ide::get()->getImage('noAvatar.jpg')->image);
-            $image->stretch = true;
-            $image->smartStretch = true;
-            $image->centered = true;
-            $image->proportional = true;
-            UXAnchorPane::setAnchor($image, 0);
-
-            $this->accountAvatarImage->add($image);
-
-            if ($avatar) {
+        (new Thread(function () {
+            while (true) {
                 try {
-                    $image->image = new UXImage(Stream::of($avatar));
-                } catch (IOException $e) {
-                    Logger::error("Unable to load splash account image, {$e->getMessage()}");
+                    if ($this->_app->getMainForm()->visible)
+                        $this->hide();
+                } catch (\Throwable $e) {
+                    ;
                 }
+
+                sleep(1);
             }
-        }
-
-        waitAsync(7000, function() {
-            if ($this->_app->getMainForm()->visible) {
-                $this->hide();
-            }
-        });
-
-        Ide::get()->on('start', function () {
-            Ide::accountManager()->on('update', function ($data) {
-                Ide::service()->file()->getImageAsync($data['avatar'], function ($file) {
-                    Ide::get()->setUserConfigValue('splash.avatar', $file);
-                });
-
-                Ide::get()->setUserConfigValue('splash.name', $data['name']);
-            }, __CLASS__);
-            Ide::accountManager()->updateAccount();
-        }, __CLASS__);
+        }))->start();
     }
 
     /**
@@ -124,33 +64,5 @@ class SplashForm extends AbstractIdeForm
     {
         $this->tip->text = SplashTipSystem::get(Ide::get()->getLanguage()->getCode());
         $e->consume();
-    }
-
-    /**
-     * @event show
-     */
-    public function doShow()
-    {
-        $this->tip->text = SplashTipSystem::get(Ide::get()->getLanguage()->getCode());
-
-        if (Ide::get()->isDevelopment() && Ide::get()->isWindows()) {
-            if ($this->opacity > 0.9) {
-                $this->opacity = 0.05;
-            } else {
-                $this->opacity = 1;
-            }
-        }
-
-        uiLater(function () {
-            $this->toFront();
-        });
-    }
-
-    /**
-     * @event click
-     */
-    public function hide()
-    {
-        parent::hide();
     }
 }

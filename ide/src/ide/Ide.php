@@ -2,8 +2,6 @@
 namespace ide;
 
 use framework\localization\Localizer;
-use ide\account\AccountManager;
-use ide\account\ServiceManager;
 use ide\bundle\AbstractBundle;
 use ide\editors\AbstractEditor;
 use ide\editors\value\ElementPropertyEditor;
@@ -29,6 +27,7 @@ use ide\systems\ProjectSystem;
 use ide\tool\IdeToolManager;
 use ide\ui\LazyLoadingImage;
 use ide\ui\Notifications;
+use ide\ui\UXError;
 use ide\utils\FileUtils;
 use ide\utils\Json;
 use php\gui\framework\Application;
@@ -122,11 +121,6 @@ class Ide extends Application
     protected $projectControlPanes = [];
 
     /**
-     * @var AccountManager
-     */
-    protected $accountManager = null;
-
-    /**
      * @var ServiceManager
      */
     protected $serviceManager = null;
@@ -214,31 +208,7 @@ class Ide extends Application
                         $notify = Notifications::error('error.unknown.title', 'error.unknown.message');
 
                         $notify->on('click', function () use ($e) {
-                            $dialog = new UXAlert('ERROR');
-                            $dialog->title = _('error.title');
-                            $dialog->headerText = _('error.unknown.help.text');
-                            $dialog->contentText = $e->getMessage();
-                            $dialog->setButtonTypes([_('btn.exit.dn'), _('btn.resume')]);
-                            $pane = new UXAnchorPane();
-                            $pane->maxWidth = 100000;
-
-                            $class = get_class($e);
-
-                            $content = new UXTextArea("{$class}\n{$e->getMessage()}\n\n"
-                                . _("error.in.file", $e->getFile())
-                                . "\n\t-> " . _("error.at.line", $e->getLine()) . "\n\n" . $e->getTraceAsString());
-
-
-                            $content->padding = 10;
-                            UXAnchorPane::setAnchor($content, 0);
-                            $pane->add($content);
-                            $dialog->expandableContent = $pane;
-                            $dialog->expanded = true;
-                            switch ($dialog->showAndWait()) {
-                                case _('btn.exit.dn'):
-                                    Ide::get()->shutdown();
-                                    break;
-                            }
+                            (new UXError($e))->show();
                         });
 
                         $this->sendError($e);
@@ -271,20 +241,6 @@ class Ide extends Application
                 foreach ($this->afterShow as $handle) {
                     $handle();
                 }
-
-                $this->serviceManager = new ServiceManager();
-
-                $this->serviceManager->on('privateEnable', function () {
-                    $this->accountManager->updateAccount();
-                });
-
-                $this->serviceManager->on('privateDisable', function () {
-                    //Notifications::showAccountUnavailable();
-                });
-
-                $this->serviceManager->updateStatus();
-
-                $this->accountManager = new AccountManager();
 
                 $this->registerAll();
 
@@ -417,15 +373,7 @@ class Ide extends Application
      */
     public function sendError($e, $context = 'global')
     {
-        if (Ide::service()->canPrivate() && Ide::accountManager()->isAuthorized()) {
-            try {
-                Ide::service()->ide()->sendErrorAsync($e, function () {
-
-                });
-            } catch (\Exception $e) {
-                echo "Unable to send error, exception = {$e->getMessage()}\n";
-            }
-        }
+        // noup
     }
 
     public function makeEnvironment()
@@ -501,7 +449,7 @@ class Ide extends Application
      */
     public function getToolPath()
     {
-        $launcher = System::getProperty('develnext.launcher');
+        $launcher = System::getProperty('Nearde.launcher');
 
         switch ($launcher) {
             case 'root':
@@ -512,7 +460,7 @@ class Ide extends Application
         }
 
         if ($this->isDevelopment() && !$path->exists()) {
-            $path = $this->getOwnFile('../develnext-tools/');
+            $path = $this->getOwnFile('../Nearde-tools/');
         }
 
         $file = $path && $path->exists() ? fs::abs($path) : null;
@@ -747,7 +695,7 @@ class Ide extends Application
      */
     public static function getOwnFile($path)
     {
-        $homePath = System::getProperty('develnext.path', "./");
+        $homePath = System::getProperty('Nearde.path', "./");
 
         $home = $homePath;
 
@@ -1290,12 +1238,9 @@ class Ide extends Application
         return null;
     }
 
-    /**
-     * @return AccountManager
-     */
     public function getAccountManager()
     {
-        return $this->accountManager;
+        return null;
     }
 
     /**
@@ -1432,7 +1377,7 @@ class Ide extends Application
 
         $ideConfig = $this->getUserConfig('ide');
 
-        $defaultProjectDir = File::of(System::getProperty('user.home') . '/DevelNextProjects');
+        $defaultProjectDir = File::of(System::getProperty('user.home') . '/NeardeProjects');
 
         if (!fs::isDir($ideConfig->get('projectDirectory'))) {
             $ideConfig->set('projectDirectory', "$defaultProjectDir/");
@@ -1561,7 +1506,7 @@ class Ide extends Application
             System::halt(0);
         }));
 
-        $shutdownTh->setName("DevelNext Shutdown");
+        $shutdownTh->setName("Nearde Shutdown");
         $shutdownTh->start();
 
         Logger::info("Start IDE shutdown ...");
@@ -1609,6 +1554,8 @@ class Ide extends Application
         }
 
         $done = true;
+        
+        System::halt(0);
     }
 
     /**
@@ -1652,31 +1599,7 @@ class Ide extends Application
      */
     protected function handleArgs($argv)
     {
-        $arg = $argv[1];
-
-        if (str::startsWith($arg, 'develnext://')) {
-            $arg = str::sub($arg, str::length('develnext://'));
-
-            $protocolHandlers = $this->getInternalList('.dn/protocolHandlers');
-
-            foreach ($protocolHandlers as $protocolHandler) {
-                /** @var AbstractProtocolHandler $protocolHandler */
-                $protocolHandler = new $protocolHandler();
-
-                if ($protocolHandler->isValid($arg)) {
-                    if ($protocolHandler->handle($arg)) {
-                        return true;
-                    }
-                }
-            }
-        } else {
-            if (fs::isFile($arg)) {
-                $defProtocolHandler = new FileOpenProjectProtocolHandler();
-                if ($defProtocolHandler->handle($arg)) {
-                    return true;
-                }
-            }
-        }
+        $this->trigger("handle-args", $argv);
 
         return false;
     }
@@ -1710,28 +1633,6 @@ class Ide extends Application
     }
 
     /**
-     * Запустить новый экземпляр ide.
-     * @param array $args
-     */
-    public function startNew(array $args = [])
-    {
-        $jrePath = $this->getJrePath();
-
-        $javaBin = 'java';
-
-        if ($jrePath) {
-            $javaBin = "$jrePath/bin/$javaBin";
-        }
-
-        $args = flow([$javaBin, '-jar', 'DevelNext.jar'])->append($args)->toArray();
-
-        $process = new Process($args, IdeSystem::getOwnFile(''), $this->makeEnvironment());
-        $process->start();
-
-        Ide::toast('Запуск DevelNext, подождите ...');
-    }
-
-    /**
      * Restart IDE, запустить рестарт IDE, работает только в production режиме.
      */
     public function restart()
@@ -1756,7 +1657,7 @@ class Ide extends Application
         $libPaths[] = $this->getOwnFile('lib/');
 
         if ($this->isDevelopment()) {
-            $ownFile = $this->getOwnFile('build/install/develnext/lib');
+            $ownFile = $this->getOwnFile('build/install/DevelNext/lib');
             $libPaths[] = $ownFile;
         }
 

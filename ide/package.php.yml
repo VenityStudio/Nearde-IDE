@@ -1,7 +1,7 @@
-name: develnext-ide
-version: 17.0.0+dev
+name: nearde-ide
+version: 0.0.1+dev
 type: project
-description: IDE for PHP/JPHP.
+description: DN Fork
 
 plugins: [App]
 
@@ -12,7 +12,6 @@ sources:
 - platforms/develnext-php-platform/src
 - platforms/develnext-web-platform/src
 - platforms/develnext-wizard-platform/src
-- ../dn-app-framework/src
 
 includes:
 - index.php
@@ -29,13 +28,13 @@ deps:
   jphp-gui-ext: '~1.0.0'
   jphp-gui-game-ext: '~1.0.0'
   jphp-gui-desktop-ext: '~1.0.0'
-  jphp-httpclient-ext: '~1.0.0'
-  jphp-zip-ext: '~1.0.0'
   jphp-compress-ext: '~1.0.0'
   jphp-parser-ext: '~1.0.0'
   jphp-process-ext: '*'
   develnext-designer: '~1.0.0'
   develnext-gui-tabs-ext: '~1.0.0'
+  dn-app-framework: "*"
+  jphp-markdown-ext: "*"
 
 app:
   disable-launcher: true

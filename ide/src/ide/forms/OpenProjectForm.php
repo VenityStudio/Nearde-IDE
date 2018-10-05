@@ -184,9 +184,6 @@ class OpenProjectForm extends AbstractIdeForm
         $this->icon->image = Ide::get()->getImage('icons/open32.png')->image;
         $this->modality = 'APPLICATION_MODAL';
         $this->title = _('project.open.title');
-
-        Ide::accountManager()->bind('login', [$this, 'updateShared']);
-        Ide::accountManager()->bind('logout', [$this, 'updateShared']);
     }
 
     protected function sharedCellFactory(array $item)
@@ -354,44 +351,7 @@ class OpenProjectForm extends AbstractIdeForm
 
     public function updateShared()
     {
-        waitAsync(600, function () {
-            if (Ide::accountManager()->isAuthorized()) {
-                if ($pane = $this->sharedPane->lookup('#need_auth')) {
-                    $pane->free();
-                }
-
-                $this->sharedList->items->clear();
-
-                $preloader = new Preloader($this->sharedPane);
-                $preloader->show();
-
-                Ide::service()->projectArchive()->getListAsync(function (ServiceResponse $response) use ($preloader) {
-                    $preloader->hide();
-
-                    uiLater(function () use ($response) {
-                        if ($response->isSuccess()) {
-                            // for performance.
-                            foreach ($response->result() as $one) {
-                                uiLater(function () use ($one) {
-                                    $this->sharedList->items->add($one);
-                                });
-                            }
-                        } else {
-                            $this->sharedList->items->setAll([$response]);
-                        }
-                    });
-                });
-            } else {
-                if (!$this->sharedPane->lookup('#need_auth')) {
-                    $pane = new NeedAuthPane();
-                    $pane->id = 'need_auth';
-
-                    UXAnchorPane::setAnchor($pane, 3);
-
-                    $this->sharedPane->add($pane);
-                }
-            }
-        });
+        // noup
     }
 
     /**

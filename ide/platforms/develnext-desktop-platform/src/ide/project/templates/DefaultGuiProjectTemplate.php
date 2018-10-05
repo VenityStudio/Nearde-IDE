@@ -299,7 +299,6 @@ class DefaultGuiProjectTemplate extends AbstractProjectTemplate
         $gui = $project->register(new GuiFrameworkProjectBehaviour());
 
         $project->register(new RunBuildProjectBehaviour());
-        $project->register(new ShareProjectBehaviour());
         $project->register(new BackupProjectBehaviour());
 
         $project->setIgnoreRules([

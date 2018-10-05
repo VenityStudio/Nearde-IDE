@@ -16,7 +16,6 @@ use php\util\Regex;
 
 function task_publish(Event $e)
 {
-    Tasks::runExternal('./dn-app-framework', 'publish', [], ...$e->flags());
     Tasks::runExternal('./dn-designer', 'publish', [], ...$e->flags());
     Tasks::runExternal('./dn-gui-tabs-ext', 'publish', [], ...$e->flags());
 
@@ -30,8 +29,6 @@ function task_publish(Event $e)
  */
 function task_hubPublish(Event $e)
 {
-    Tasks::runExternal('./dn-app-framework', 'hub:publish', [], ...$e->flags());
-
     foreach ($e->package()->getAny('bundles', []) as $bundle) {
         Tasks::runExternal("./bundles/$bundle", 'hub:publish', [], ...$e->flags());
     }

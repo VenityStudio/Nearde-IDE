@@ -21,6 +21,8 @@ use php\util\Regex;
  */
 class AbstractIdeForm extends AbstractForm
 {
+    protected $__ide;
+
     public function __construct(UXForm $origin = null)
     {
         parent::__construct($origin);
@@ -28,6 +30,8 @@ class AbstractIdeForm extends AbstractForm
         if (Ide::isCreated()) {
             $this->owner = Ide::get()->getMainForm();
         }
+
+        $this->__ide = Ide::get();
 
         Logger::info("Create form " . get_class($this));
 

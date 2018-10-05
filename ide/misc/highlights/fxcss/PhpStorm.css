@@ -51,3 +51,19 @@
 .syntax-text-area .text.variable {
     -fx-fill: #660000;
 }
+
+.styled-text-area .text.pseudo-class {
+    -fx-fill: #6994dc;
+}
+
+.styled-text-area .text.attribute {
+    -fx-fill: #238125;
+}
+
+.styled-text-area .text.color {
+    -fx-fill: #324aff;
+}
+
+.syntax-text-area .text.number {
+    -fx-fill: #324aff;
+}

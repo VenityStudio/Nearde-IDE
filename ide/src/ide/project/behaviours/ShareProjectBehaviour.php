@@ -24,40 +24,11 @@ use php\time\Time;
 class ShareProjectBehaviour extends AbstractProjectBehaviour
 {
     /**
-     * @var UXVBox
-     */
-    protected $uiSettings;
-
-    /**
-     * @var NeedAuthPane
-     */
-    protected $uiAuthPane;
-
-    /**
-     * @var ShareProjectArea
-     */
-    protected $uiSyncPane;
-
-    /**
-     * @var ProjectArchiveService
-     */
-    protected $projectService;
-
-    /**
-     * @var array
-     */
-    protected $data;
-
-    /**
      * ...
      */
     public function inject()
     {
-        $this->project->on('makeSettings', [$this, 'doMakeSettings']);
-        $this->project->on('updateSettings', [$this, 'doUpdateSettings']);
-        $this->project->on('close', [$this, 'doClose']);
-
-        $this->projectService = Ide::service()->projectArchive();
+        // noup
     }
 
     /**
@@ -67,73 +38,5 @@ class ShareProjectBehaviour extends AbstractProjectBehaviour
     public function getPriority()
     {
         return self::PRIORITY_COMPONENT;
-    }
-
-    public function doClose()
-    {
-    }
-
-    public function doUpdateSettings(CommonProjectControlPane $editor = null)
-    {
-        if ($this->uiSettings) {
-            $this->uiAuthPane->free();
-            $this->uiSyncPane->free();
-
-            if ( Ide::accountManager()->isAuthorized() ) {
-                $this->uiSettings->add($this->uiSyncPane);
-
-                $uid = Ide::project()->getIdeServiceConfig()->get('projectArchive.uid');
-
-                if ($uid) {
-                    $this->projectService->getAsync($uid, function (ServiceResponse $response) {
-                        if ($response->isSuccess()) {
-                            $this->data = $response->result();
-                            $this->uiSyncPane->setData($data = $response->result());
-                        } else {
-                            $this->uiSyncPane->setData(null);
-                            $this->data = $response->result();
-                        }
-                    });
-                } else {
-                    $this->uiSyncPane->setData(null);
-                }
-            } else {
-                $this->uiSettings->add($this->uiAuthPane);
-            }
-        }
-    }
-
-    public function doMakeSettings(CommonProjectControlPane $editor)
-    {
-        $title = _(new UXLabel('share.sync.with.hub::Синхронизация с'));
-        $title->font = $title->font->withBold();
-
-        $colon = new UXLabel(': ');
-        $colon->font = $colon->font->withBold();
-
-        $url = new URL(Ide::service()->getEndpoint());
-
-        $link = new UXHyperlink('hub.develnext.org');
-        $link->on('action', function () use ($url) {
-            browse('https://hub.develnext.org');
-        });
-
-        $titleFlow = new UXHBox([$title, new UXLabel(' '), $link, $colon]);
-
-        $this->uiAuthPane = $authPane = new NeedAuthPane();
-        $authPane->setTitle('share.sync.not.available::Синхронизация недоступна');
-
-        $this->uiSyncPane = $syncPane = new ShareProjectArea([$this, 'doUpdateSettings']);
-
-        Ide::accountManager()->bind('login', [$this, 'doUpdateSettings']);
-        Ide::accountManager()->bind('logout', [$this, 'doUpdateSettings']);
-
-        $ui = new UXVBox([$titleFlow]);
-        $ui->spacing = 5;
-
-        $pane = $editor->addSettingsPane($ui);
-        $pane->backgroundColor = 'white';
-
-        $this->uiSettings = $ui;
     }
 }

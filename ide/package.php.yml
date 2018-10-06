@@ -35,6 +35,7 @@ deps:
   develnext-gui-tabs-ext: '~1.0.0'
   dn-app-framework: "*"
   jphp-markdown-ext: "*"
+  jphp-richtextfx-ext: "*"
 
 app:
   disable-launcher: true

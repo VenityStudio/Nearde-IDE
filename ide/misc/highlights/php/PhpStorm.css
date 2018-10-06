@@ -11,7 +11,7 @@
     -fx-fill: #000000;
 }
 
-.syntax-text-area .gutter .lineno {
+.syntax-text-area .lineno {
     -fx-text-fill: rgba(51, 51, 51, 0.32);
     -fx-fill: rgba(51, 51, 51, 0.32);
     -fx-background-fill: rgba(51, 51, 51, 0.32);

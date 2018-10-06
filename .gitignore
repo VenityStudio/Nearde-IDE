@@ -27,6 +27,7 @@ package.hub.yml
 package-lock.php.yml
 
 vendor/
+!ide/src/.data/vendor/
 
 out/
 

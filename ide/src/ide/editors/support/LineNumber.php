@@ -13,7 +13,7 @@ class LineNumber
         $node->paddingLeft = 8;
         $node->classes->add("lineno");
 
-        foreach ([10, 100, 1000, 10000] as $i)
+        foreach ([10, 100, 1000, 10000, 100000] as $i)
             if ($line + 1 < $i) $node->paddingRight += 7;
 
         $box = new UXVBox([$node]);

@@ -3,26 +3,21 @@
 namespace ide\editors;
 
 
-use ide\editors\support\LineNumber;
+use ide\editors\highlighters\MarkDownHighlighter;
+use ide\editors\support\CodeArea;
 use ide\Ide;
 use ide\utils\FileUtils;
 use markdown\Markdown;
-use php\gui\designer\UXTextCodeArea;
-use php\gui\UXInlineCssTextArea;
-use php\gui\UXLabel;
 use php\gui\UXNode;
-use php\gui\UXSplitPane;
-use php\gui\UXStyleClassedTextArea;
 use php\gui\UXTab;
 use php\gui\UXTabPane;
-use php\gui\UXVirtualizedScrollPane;
 use php\gui\UXWebView;
 use php\io\Stream;
 
 class MarkDownEditor extends AbstractEditor
 {
     /**
-     * @var UXStyleClassedTextArea
+     * @var CodeArea
      */
     private $editor;
 
@@ -35,16 +30,14 @@ class MarkDownEditor extends AbstractEditor
     {
         parent::__construct($file);
 
-        $this->editor = new UXStyleClassedTextArea();
+        $this->editor = new CodeArea();
         $this->browser = new UXWebView();
 
-        $this->editor->appendText(Stream::getContents($this->file));
-        $this->editor->on("keyUp", [$this, "render"]);
-        $this->render();
+        $this->editor->setHighlighter(MarkDownHighlighter::class);
+        $this->editor->getHighlighter()->on("applyHighlight", [$this, "render"]);
+        $this->editor->getRichArea()->appendText(Stream::getContents($this->file));
 
-        $this->editor->classes->add("syntax-text-area");
-        $this->editor->stylesheets->add(FileUtils::urlPath(CodeEditor::getHighlightFile("php", "PhpStorm")));
-        $this->editor->graphicFactory(new LineNumber());
+        $this->editor->addStylesheet(CodeEditor::getHighlightFile("php", "PhpStorm"));
     }
 
     public function getIcon()
@@ -59,7 +52,7 @@ class MarkDownEditor extends AbstractEditor
 
     public function save()
     {
-        Stream::putContents($this->file, $this->editor->text);
+        Stream::putContents($this->file, $this->editor->getRichArea()->text);
     }
 
     /**
@@ -74,7 +67,7 @@ class MarkDownEditor extends AbstractEditor
 
         $editor->text = "Редактор";
         $editor->graphic = Ide::getImage("icons/idea16.png");
-        $editor->content = new UXVirtualizedScrollPane($this->editor);
+        $editor->content = $this->editor;
 
         $view->text = "Просмотор";
         $view->graphic = Ide::getImage("icons/webBrowser16.png");
@@ -83,13 +76,14 @@ class MarkDownEditor extends AbstractEditor
         return $tabpane;
     }
 
-    private function render() {
+    public function render() {
         $md = new Markdown();
         $content  = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
-        $content .= "<style>".Stream::getContents("res://.data/vendor/markdown.css")."</style>";
+        $content .= "<style>". Stream::getContents("res://.data/vendor/markdown.css") ."</style>";
         $content .= "<article class=\"markdown-body\">";
-        $content .= $md->render($this->editor->text);
+        $content .= $md->render($this->editor->getRichArea()->text);
         $content .= "</article>";
+        $content .= "<script language='JavaScript'>". Stream::getContents("res://.data/vendor/prism.js") ."</script>";
         $this->browser->engine->loadContent($content);
     }
 }

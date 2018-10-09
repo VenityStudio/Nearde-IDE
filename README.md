@@ -1,4 +1,4 @@
-# Nearde IDE
+# Nearde IDE [![Build Status](https://travis-ci.org/VenityStudio/Nearde-IDE.svg?branch=master)](https://travis-ci.org/VenityStudio/Nearde-IDE)
 
 Fork of DevelNext-17
 

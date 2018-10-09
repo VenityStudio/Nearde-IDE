@@ -16,22 +16,10 @@ use php\util\Regex;
 
 function task_publish(Event $e)
 {
-    Tasks::runExternal('./dn-designer', 'publish', [], ...$e->flags());
-    Tasks::runExternal('./dn-gui-tabs-ext', 'publish', [], ...$e->flags());
+    Tasks::runExternal('./designer', 'publish', [], ...$e->flags());
+    Tasks::runExternal('./dnd-gui-tabs-ext', 'publish', [], ...$e->flags());
 
-    foreach ($e->package()->getAny('bundles', []) as $bundle) {
-        Tasks::runExternal("./bundles/$bundle", 'publish', [], ...$e->flags());
-    }
-}
-
-/**
- * @jppm-task hub:publish
- */
-function task_hubPublish(Event $e)
-{
-    foreach ($e->package()->getAny('bundles', []) as $bundle) {
-        Tasks::runExternal("./bundles/$bundle", 'hub:publish', [], ...$e->flags());
-    }
+    Tasks::run('bundle:publish', [], 'yes');
 }
 
 /**
@@ -176,7 +164,7 @@ function task_buildIde(Event $e)
                 if ($stream) {
                     Console::print("-> copy $e->name to jre dir ...");
                     fs::ensureParent("./tools/build/jre/$os/$e->name");
-                    fs::copy($stream, "./tools/build/jre/$os/$e->name", null, 1024 * 1024 * 8);
+                    fs::copy($stream, "./tools/build/jre/$os/$e->name", null, 8388608 /* 1024 * 1024 * 8 */);
                     Console::log(".. done.");
                 }
             });

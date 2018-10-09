@@ -31,8 +31,8 @@ deps:
   jphp-compress-ext: '~1.0.0'
   jphp-parser-ext: '~1.0.0'
   jphp-process-ext: '*'
-  develnext-designer: '~1.0.0'
-  develnext-gui-tabs-ext: '~1.0.0'
+  designer: '~1.0.0'
+  dnd-gui-tabs-ext: '~1.0.0'
   dn-app-framework: "*"
   jphp-markdown-ext: "*"
   jphp-richtextfx-ext: "*"

@@ -28,4 +28,5 @@ localization:
   languages: [ru, en]
 
 jre:
-  win: './tools/jre-win64-10.0.1.tar.bz2'
+  win: './jre/jre-win64-10.0.2.tar.gz'
+  linux: './jre/jre-linux64-10.0.2.tar.gz'

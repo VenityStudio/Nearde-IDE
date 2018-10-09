@@ -9,4 +9,4 @@ before_script:
   
 script: 
   - "jppm prepare-ide"
-  - "jppm build-ide"
+  - "jppm build-ide -linux"

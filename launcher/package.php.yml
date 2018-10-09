@@ -1,0 +1,15 @@
+name: launcher
+version: 0.1.0
+
+plugins:
+- Gradle
+- App
+
+app:
+  main-class: 'org.nearde.ide.Launcher'
+  build:
+    file-name: 'NeardeLauncher'
+
+gradle:
+  deps:
+  - 'com.googlecode.json-simple:json-simple:1.1.1'

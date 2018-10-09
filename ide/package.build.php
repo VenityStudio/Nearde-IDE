@@ -20,7 +20,6 @@ function task_copySourcesToBuild($e)
             Tasks::copy("./$src", "./build/sources/$src");
         }
     }
-
-    Tasks::copy("../dn-app-framework/src", "./build/sources/dn-app-framework");
+    
     Tasks::copy("./src-release", "./build/sources/src");
 }

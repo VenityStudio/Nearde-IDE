@@ -3,6 +3,7 @@ namespace ide\formats;
 
 use ide\editors\AbstractEditor;
 use ide\editors\CodeEditor;
+use ide\editors\TextEditor;
 use ide\utils\FileUtils;
 use php\gui\designer\UXSyntaxAutoCompletion;
 use php\lib\fs;
@@ -23,9 +24,7 @@ class TextCodeFormat extends AbstractFormat
      */
     public function createEditor($file, array $options = [])
     {
-        $editor = new CodeEditor($file, 'text');
-
-        return $editor;
+        return new TextEditor($file);
     }
 
     /**

@@ -18,10 +18,15 @@ class CodeArea extends UXVirtualizedScrollPane
      */
     protected $highlighter;
 
+    /**
+     * @var LineNumber
+     */
+    protected $lineNumber;
+
     public function __construct()
     {
         parent::__construct($this->richArea = new UXStyleClassedTextArea());
-        $this->richArea->graphicFactory(new LineNumber());
+        $this->richArea->graphicFactory($this->lineNumber = new LineNumber());
         $this->richArea->classes->add("syntax-text-area");
     }
 
@@ -41,7 +46,7 @@ class CodeArea extends UXVirtualizedScrollPane
     /**
      * @return AbstractHighlighter
      */
-    public function getHighlighter(): AbstractHighlighter
+    public function getHighlighter(): ?AbstractHighlighter
     {
         return $this->highlighter;
     }
@@ -51,5 +56,13 @@ class CodeArea extends UXVirtualizedScrollPane
      */
     public function addStylesheet(string $file) {
         $this->richArea->stylesheets->add(FileUtils::urlPath($file));
+    }
+
+    /**
+     * @return LineNumber
+     */
+    public function getLineNumber()
+    {
+        return $this->lineNumber;
     }
 }

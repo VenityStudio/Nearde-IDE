@@ -5,6 +5,7 @@ namespace ide\editors;
 
 use ide\editors\highlighters\MarkDownHighlighter;
 use ide\editors\support\CodeArea;
+use ide\editors\support\Gutter;
 use ide\Ide;
 use ide\utils\FileUtils;
 use markdown\Markdown;

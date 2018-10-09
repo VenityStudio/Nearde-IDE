@@ -22,8 +22,6 @@
 
     -fx-border-color: #d0d0d0;
     -fx-border-width: 0 1px 0 0;
-
-    -fx-padding: 0 3 0 3;
 }
 
 .syntax-text-area .caret {

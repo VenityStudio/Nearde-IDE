@@ -1,7 +1,7 @@
 
 To run IDE on Linux you must:
 
-1. Run ide, "./DevelNext" in your console
+1. Run ide, "./NeardeLauncher" in your console
 
 ---
 
@@ -9,6 +9,4 @@ To run IDE on Linux you must:
 
 1. Открыть консоль (терминал)
 2. Зайти в папку DN (через команду "cd <путь к DN>")
-3. И запустить IDE через консольную команду "./DevelNext"
-
-Из под Linux доступна только сборка JAR файлов.
+3. И запустить IDE через консольную команду "./NeardeLauncher"

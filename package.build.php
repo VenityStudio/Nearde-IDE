@@ -141,7 +141,7 @@ function task_buildIde(Event $e)
     Tasks::deleteFile('./dn-launcher/build');
     Tasks::runExternal('./dn-launcher', 'build');
     Tasks::deleteFile("./ide/build/DevelNext.jar");
-    Tasks::copy('./dn-launcher/build/DevelNext.jar', './ide/build');
+    Tasks::copy('./dn-launcher/build/NeardeLauncher.jar', './ide/build');
 
     Tasks::runExternal('./ide', 'copySourcesToBuild');
 

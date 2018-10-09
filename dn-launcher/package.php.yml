@@ -8,7 +8,7 @@ plugins:
 app:
   main-class: 'org.develnext.ide.Launcher'
   build:
-    file-name: 'DevelNext'
+    file-name: 'NeardeLauncher'
 
 gradle:
   deps:

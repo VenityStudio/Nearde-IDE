@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "-----------------------"
-echo "Start DevelNext ..."
+echo "Start Nearde IDE ..."
 echo "-----------------------"
 
 realpath() {
@@ -18,9 +18,7 @@ JAVA_BIN="$JAVA_HOME/bin/java"
 
 cd "$APP_HOME"
 
-OUTPUT=$(exec "$JAVA_BIN" -jar "$APP_HOME/DevelNext.jar")
+OUTPUT=$(exec "$JAVA_BIN" -jar "$APP_HOME/NeardeLauncher.jar")
 
-echo $OUTPUT
-echo ""
 echo "---------------------"
-echo "DevelNext has been started."
+echo "Nearde IDE has been started."

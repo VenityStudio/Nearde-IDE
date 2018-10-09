@@ -4,24 +4,24 @@ version: 0.0.1+dev
 requires:
   java: {version: '>=9.0.0', arch: amd64}
   os:
-  - Windows
-  - Linux
+    - Windows
+    - Linux
 
 bundles:
-- dn-game2d-bundle
-- dn-debug-bundle
-- dn-jsoup-bundle
-- dn-mail-bundle
-- dn-systemtray-bundle
-- dn-zip-bundle
-- dn-httpclient-bundle
-- dn-hotkey-bundle
-- dn-jfoenix-bundle
-- dn-sql-bundle
-- dn-sqlite-bundle
-- dn-mysql-bundle
-- dn-pgsql-bundle
-- dn-firebirdsql-bundle
+  - dn-game2d-bundle
+  - dn-debug-bundle
+  - dn-jsoup-bundle
+  - dn-mail-bundle
+  - dn-systemtray-bundle
+  - dn-zip-bundle
+  - dn-httpclient-bundle
+  - dn-hotkey-bundle
+  - dn-jfoenix-bundle
+  - dn-sql-bundle
+  - dn-sqlite-bundle
+  - dn-mysql-bundle
+  - dn-pgsql-bundle
+  - dn-firebirdsql-bundle
 
 localization:
   source-dir: './ide/misc/languages'

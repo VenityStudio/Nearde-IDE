@@ -22,9 +22,9 @@ public class Launcher {
     protected String[] fetchJvmArgs() {
         String[] jvmArgs = defaultJvmArgs;
 
-        if (new File(rootDir, "/DevelNext.conf").exists()) {
+        if (new File(rootDir, "/NeardeLauncher.conf").exists()) {
             try {
-                Scanner scanner = new Scanner(new FileInputStream(new File(rootDir, "/DevelNext.conf")), "UTF-8");
+                Scanner scanner = new Scanner(new FileInputStream(new File(rootDir, "/NeardeLauncher.conf")), "UTF-8");
 
                 Set<String> newJvmArgs = new TreeSet<String>();
 
@@ -67,7 +67,7 @@ public class Launcher {
 
     public void start() throws URISyntaxException, IOException, InterruptedException {
         if (!isJava8FxExists()) {
-            JOptionPane.showMessageDialog(null, "Oracle/Open Java Runtime 8+ required with JavaFX", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Oracle Java Runtime 9+ required with JavaFX", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

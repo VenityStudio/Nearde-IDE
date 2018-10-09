@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mwguy
- * Date: 06.10.18
- * Time: 12:39
- */
 
 namespace ide\editors\support;
 

@@ -33,11 +33,11 @@ class MarkDownEditor extends AbstractEditor
         $this->editor = new CodeArea();
         $this->browser = new UXWebView();
 
+        $this->editor->addStylesheet(CodeEditor::getHighlightFile("php", "PhpStorm"));
         $this->editor->setHighlighter(MarkDownHighlighter::class);
         $this->editor->getHighlighter()->on("applyHighlight", [$this, "render"]);
         $this->editor->getRichArea()->appendText(Stream::getContents($this->file));
-
-        $this->editor->addStylesheet(CodeEditor::getHighlightFile("php", "PhpStorm"));
+        $this->editor->getHighlighter()->applyHighlight();
     }
 
     public function getIcon()
@@ -73,6 +73,8 @@ class MarkDownEditor extends AbstractEditor
         $view->graphic = Ide::getImage("icons/webBrowser16.png");
         $view->content = $this->browser;
 
+        $editor->closable = $view->closable = false;
+
         return $tabpane;
     }
 
@@ -83,7 +85,6 @@ class MarkDownEditor extends AbstractEditor
         $content .= "<article class=\"markdown-body\">";
         $content .= $md->render($this->editor->getRichArea()->text);
         $content .= "</article>";
-        $content .= "<script language='JavaScript'>". Stream::getContents("res://.data/vendor/prism.js") ."</script>";
         $this->browser->engine->loadContent($content);
     }
 }

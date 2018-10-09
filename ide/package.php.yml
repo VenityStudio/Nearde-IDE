@@ -35,7 +35,7 @@ deps:
   dnd-gui-tabs-ext: '~1.0.0'
   dn-app-framework: "*"
   jphp-markdown-ext: "*"
-  jphp-richtextfx-ext: "*"
+  jphp-richtextfx-ext: "1.2.1"
 
 app:
   disable-launcher: true

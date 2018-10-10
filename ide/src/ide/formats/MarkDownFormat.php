@@ -43,4 +43,9 @@ class MarkDownFormat extends AbstractFormat
     {
 
     }
+
+    public function getIcon()
+    {
+        return "icons/idea16.png";
+    }
 }

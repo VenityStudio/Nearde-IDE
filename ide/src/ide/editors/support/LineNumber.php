@@ -3,6 +3,7 @@
 namespace ide\editors\support;
 
 use php\gui\layout\UXHBox;
+use php\gui\UXImageArea;
 use php\gui\UXImageView;
 use php\gui\UXLabel;
 
@@ -22,15 +23,15 @@ class LineNumber
             if ($line + 1 < $i) $node->paddingRight += 7;
 
         if (!$this->gutters[$line + 1])
-            $gutter = $this->gutters[$line + 1] = new UXImageView();
-        else $gutter = $this->gutters[$line + 1];
+            $gutter = &$this->gutters[$line + 1] = new UXImageView();
+        else $gutter = &$this->gutters[$line + 1];
         
         $gutter->size = [16, 16];
         $gutter->cursor = "HAND";
         
         $box = new UXHBox([$gutter, $node]);
         $box->classes->add("gutter");
-        $box->spacing = 8;
+        $box->spacing = $box->paddingLeft = 8;
         return $box;
     }
 

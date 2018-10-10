@@ -36,10 +36,6 @@
     -fx-font: 12px 'Consolas';
 }
 
-.styled-text-area .caret {
-    -fx-stroke-width: 2px;
-}
-
 .code-area-popup {
     -fx-font: 14px 'Consolas';
 

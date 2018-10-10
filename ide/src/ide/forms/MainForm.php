@@ -119,20 +119,9 @@ class MainForm extends AbstractIdeForm
         $tabPane->tabClosingPolicy = 'ALL_TABS';
         $tabPane->classes->add('dn-file-tab-pane');
 
-        // todo fix bug
-        /*$tabPane->on('keyDown', $keyDown = function (UXKeyEvent $e) {
-            if ($e->controlDown && $e->codeName == 'Tab') {
-                $e->consume();
-                FileSystem::openNext();
-            }
-        });*/
-
         if ($pane) {
             UXAnchorPane::setAnchor($pane, 0);
             $parent->add($pane);
-
-            // fix bug
-            // $pane->on('keyDown', $keyDown);
         } else {
             $parent->add($tabPane);
         }

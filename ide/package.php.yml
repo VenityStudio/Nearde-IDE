@@ -12,6 +12,7 @@ sources:
 - platforms/develnext-php-platform/src
 - platforms/develnext-web-platform/src
 - platforms/develnext-wizard-platform/src
+- platforms/nearde-android-platform/src
 
 includes:
 - index.php

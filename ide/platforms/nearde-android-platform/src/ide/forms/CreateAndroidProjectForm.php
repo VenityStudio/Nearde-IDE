@@ -95,7 +95,7 @@ class CreateAndroidProjectForm extends AbstractIdeForm
             $install = ['jppm', 'install'];
 
             if (Ide::get()->isWindows())
-                $install = flow(['cmd.exe', '/c'], $install);
+                $install = flow(['cmd.exe', '/c'], $install)->toArray();
 
             (new Process($install, $this->project->getRootDir(), Ide::get()->makeEnvironment()))->inheritIO()->startAndWait();
 
@@ -105,7 +105,7 @@ class CreateAndroidProjectForm extends AbstractIdeForm
                 "-{$this->sdkVersion->text}", "-{$this->buildToolsVersion->text}"];
 
             if (Ide::get()->isWindows())
-                $app = flow(['cmd.exe', '/c'], $app);
+                $app = flow(['cmd.exe', '/c'], $app)->toArray();
 
             (new Process($app, $this->project->getRootDir(), Ide::get()->makeEnvironment()))->inheritIO()->startAndWait();
 

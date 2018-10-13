@@ -11,8 +11,11 @@ use ide\project\Project;
 use ide\project\supports\jppm\JPPMControlPane;
 use ide\project\templates\AndroidProjectTemplate;
 use ide\systems\ProjectSystem;
+use ide\utils\Json;
 use php\concurrent\Promise;
+use php\io\Stream;
 use php\lang\Process;
+use php\lib\fs;
 use Throwable;
 
 class AndroidProjectSupport extends AbstractProjectSupport
@@ -39,38 +42,60 @@ class AndroidProjectSupport extends AbstractProjectSupport
             $projectFormat->addControlPane(new JPPMControlPane());
         }
 
-        $prepareFunc = function ($output): Promise {
-            return new Promise(function ($resolve, $reject) use ($output) {
-                try {
-                    ProjectSystem::compileAll(Project::ENV_DEV, $output, "Prepare project ...", function () use ($resolve) {
-                        $resolve(true);
-                    });
-                } catch (Throwable $e) {
-                    $reject($e);
-                }
-            });
-        };
-
         $project->getRunDebugManager()->remove('jppm-start');
         $project->getRunDebugManager()->remove('jppm-build');
 
-        $project->getRunDebugManager()->add('jppm-android-build', [
-            'title' => 'Build APK',
-            'prepareFunc' => $prepareFunc,
-            'icon' => 'icons/boxArrow16.png',
-            'makeStartProcess' => function () use ($project) {
-                $env = Ide::get()->makeEnvironment();
+        $tasksFile = $project->getIdeFile("tasks.json");
 
-                $args = ['jppm', 'android:compile', '-build'];
+        if (!fs::exists($tasksFile))
+            Stream::putContents($tasksFile->getAbsolutePath(), Json::encode([
+                "gradle-packageDebug" => [
+                    "type" => "android",
+                    "task" => "packageDebug",
+                    "title" => "packageDebug task"
 
-                if (Ide::get()->isWindows()) {
-                    $args = flow(['cmd', '/c'], $args)->toArray();
-                }
+                ],
+                "jppm-update" => [
+                    "type" => "jppm",
+                    "task" => "update",
+                    "title" => "jppm update"
+                ]
+            ]));
 
-                $process = new Process($args, $project->getRootDir(), $env);
-                return $process;
-            },
-        ]);
+        $tasks = Json::fromFile($tasksFile->getAbsolutePath());
+
+        foreach ($tasks as $id => $array) {
+            $project->getRunDebugManager()->add($id, [
+                'title' => $array['title'] ?? $id,
+                'icon' => $array['type'] == "gradle" ? "icons/gradle16.png" :
+                    $array['type'] == "android" ? "icons/gradleAndroid16.png" : "icons/gear16.png",
+                'makeStartProcess' => function () use ($project, $array) {
+                    $env = Ide::get()->makeEnvironment();
+
+                    foreach ($array['env'] as $key => $val)
+                        if (is_string($val))
+                            $env[$key] = $val;
+
+                    switch ($array['type']) {
+                        case "android":
+                            $args = ['jppm', 'android:compile', "-{$array["task"]}"];
+                            break;
+
+                        case "jppm":
+                            $args = ['jppm', $array['task']];
+                            break;
+
+                        default:
+                            $args = $array['command'];
+                    }
+
+                    if (Ide::get()->isWindows())
+                        $args = flow(['cmd', '/c'], $args)->toArray();
+
+                    return new Process($args, $project->getRootDir(), $env);
+                },
+            ]);
+        }
     }
 
     /**

@@ -5,14 +5,11 @@ namespace ide\project\templates;
 
 use ide\formats\ProjectFormat;
 use ide\forms\CreateAndroidProjectForm;
-use ide\Ide;
 use ide\project\AbstractProjectTemplate;
 use ide\project\behaviours\BackupProjectBehaviour;
 use ide\project\behaviours\JavaPlatformBehaviour;
 use ide\project\behaviours\PhpProjectBehaviour;
 use ide\project\Project;
-use ide\project\support\AndroidProjectSupport;
-use ide\utils\FileUtils;
 
 class AndroidProjectTemplate extends AbstractProjectTemplate
 {

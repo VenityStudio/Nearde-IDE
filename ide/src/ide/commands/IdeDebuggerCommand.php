@@ -48,14 +48,6 @@ class IdeDebuggerCommand extends AbstractCommand
 
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
-        if ($this->command) {
-            if (IdeSystem::isDevelopment()) {
-                $this->command->onExecute();
-            }
-
-            return;
-        }
-
         $form = new UXForm();
         $form->icons->add((Ide::getImage($this->getIcon()))->image);
         $form->title = $this->getName();
@@ -87,7 +79,7 @@ class IdeDebuggerCommand extends AbstractCommand
         });
 
         $pane = UiUtils::makeCommandPane([
-            $this->command = SimpleSingleCommand::makeWithText('Запустить', 'icons/run16.png', function () use ($editor, $file) {
+            SimpleSingleCommand::makeWithText('Запустить', 'icons/run16.png', function () use ($editor, $file) {
                 try {
                     include IdeSystem::getFile("debugger.php")->getCanonicalPath();
                 } catch (\Throwable $throwable) {

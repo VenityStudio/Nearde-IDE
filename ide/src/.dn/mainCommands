@@ -10,5 +10,3 @@ ide\commands\RunTaskCommand
 
 ide\commands\IdeLogShowCommand
 ide\commands\IdeDebuggerCommand
-
-ide\commands\AboutCommand

@@ -47,7 +47,8 @@ class AndroidProjectSupport extends AbstractProjectSupport
 
         $tasksFile = $project->getIdeFile("tasks.json");
 
-        if (!fs::exists($tasksFile))
+        if (!fs::exists($tasksFile)) {
+            fs::makeFile($tasksFile->getAbsolutePath());
             Stream::putContents($tasksFile->getAbsolutePath(), Json::encode([
                 "gradle-packageDebug" => [
                     "type" => "android",
@@ -61,6 +62,8 @@ class AndroidProjectSupport extends AbstractProjectSupport
                     "title" => "jppm update"
                 ]
             ]));
+        }
+
 
         $tasks = Json::fromFile($tasksFile->getAbsolutePath());
 
@@ -109,6 +112,6 @@ class AndroidProjectSupport extends AbstractProjectSupport
             $projectFormat->removeControlPane(JPPMControlPane::class);
         }
 
-        $project->getRunDebugManager()->remove('jppm-android-build');
+        $project->getRunDebugManager()->clear();
     }
 }

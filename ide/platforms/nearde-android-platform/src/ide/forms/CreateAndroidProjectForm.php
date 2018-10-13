@@ -9,14 +9,16 @@ use ide\project\behaviours\BackupProjectBehaviour;
 use ide\project\behaviours\JavaPlatformBehaviour;
 use ide\project\behaviours\PhpProjectBehaviour;
 use ide\project\Project;
-use ide\project\support\AndroidProjectSupport;
 use ide\utils\FileUtils;
+use ide\utils\Json;
 use php\gui\UXButton;
 use php\gui\UXDialog;
 use php\gui\UXLoader;
 use php\gui\UXTextField;
 use php\io\Stream;
 use php\lang\Process;
+use php\lib\fs;
+use php\lib\str;
 
 /**
  * Class CreateAndroidProjectForm
@@ -48,6 +50,9 @@ class CreateAndroidProjectForm extends AbstractIdeForm
         $this->project = $project;
     }
 
+    /**
+     * @throws \php\io\IOException
+     */
     protected function loadDesign()
     {
         $this->layout = (new UXLoader())->loadFromString(Stream::getContents("res://ide/forms/CreateAndroidProjectForm.fxml"));
@@ -62,6 +67,11 @@ class CreateAndroidProjectForm extends AbstractIdeForm
         $this->hide();
     }
 
+    /**
+     * @throws \php\io\IOException
+     * @throws \php\lang\IllegalArgumentException
+     * @throws \php\lang\IllegalStateException
+     */
     public function onCreateClick() {
         if ($this->app_name->text
             && $this->app_package->text
@@ -73,12 +83,15 @@ class CreateAndroidProjectForm extends AbstractIdeForm
 
             $this->showPreloader("Creating ...");
 
-            FileUtils::putAsync($this->project->getFile("src/index.php"), "<?php\r\recho 'Hello World';\r");
+            FileUtils::putAsync($this->project->getFile("src/index.php"), Stream::getContents("res://.data/android/src/index.php"));
 
             $pkgFile = new JPPMPackageFileTemplate($this->project->getFile("package.php.yml"));
 
             $pkgFile->useProject($this->project);
-            $pkgFile->setPlugins(['App']);
+            $pkgFile->setPlugins([
+                'App', "Gradle"
+            ]);
+
             $pkgFile->setIncludes(['index.php']);
 
             $pkgFile->setDeps([
@@ -92,22 +105,68 @@ class CreateAndroidProjectForm extends AbstractIdeForm
 
             $pkgFile->save();
 
-            $install = ['jppm', 'install'];
+            $install = ['jppm', 'install', '-gradle'];
 
             if (Ide::get()->isWindows())
                 $install = flow(['cmd.exe', '/c'], $install)->toArray();
 
             (new Process($install, $this->project->getRootDir(), Ide::get()->makeEnvironment()))->inheritIO()->startAndWait();
 
-            $app = ['jppm', 'android:init',
-                "-{$this->app_name->text}", "-{$this->app_package->text}",
-                "-{$this->version_string->text}", "-{$this->version_int->text}",
-                "-{$this->sdkVersion->text}", "-{$this->buildToolsVersion->text}"];
+            $pkgFile->setPlugins([
+                'App'
+            ]);
+            $pkgFile->save();
 
-            if (Ide::get()->isWindows())
-                $app = flow(['cmd.exe', '/c'], $app)->toArray();
+            FileUtils::put($this->project->getFile("gradle/wrapper/gradle-wrapper.properties")->getAbsolutePath(), str::join([
+                "distributionBase=GRADLE_USER_HOME",
+                "distributionPath=wrapper/dists",
+                "zipStoreBase=GRADLE_USER_HOME",
+                "zipStorePath=wrapper/dists",
+                "distributionUrl=https\://services.gradle.org/distributions/gradle-4.6-bin.zip"
+            ], "\n"));
 
-            (new Process($app, $this->project->getRootDir(), Ide::get()->makeEnvironment()))->inheritIO()->startAndWait();
+            $sdk = $this->sdkVersion->text;
+
+            $settings = [
+                "compileSdkVersion" => $sdk,
+                "buildToolsVersion" => $this->buildToolsVersion->text,
+                "targetSdkVersion" => $sdk,
+                "appName" => $this->app_name->text,
+                "applicationId" => $this->app_package->text,
+                "versionCode" => (int) $this->version_int->text,
+                "versionName" => $this->version_string->text,
+            ];
+
+            $script = Stream::getContents("res://.data/android/build.groovy");
+            $xml = Stream::getContents("res://.data/android/resources/AndroidManifest.xml");
+
+            foreach ($settings as $key => $val)
+                $script = str::replace($script, "%{$key}%", $val);
+
+            foreach ($settings as $key => $val)
+                $xml = str::replace($xml, "%{$key}%", $val);
+
+            fs::makeDir($this->project->getFile("resources")->getAbsolutePath());
+            fs::makeFile($this->project->getFile("resources/AndroidManifest.xml")->getAbsolutePath());
+
+            Stream::putContents($this->project->getFile("build.gradle")->getAbsolutePath(), $script);
+            Stream::putContents($this->project->getFile("resources/AndroidManifest.xml")->getAbsolutePath(), $xml);
+            FileUtils::copyFile("res://.data/jphp/compiler.jar", $this->project->getFile(".venity/compiler.jar")->getAbsolutePath());
+
+            fs::makeFile($this->project->getIdeFile("tasks.json")->getAbsolutePath());
+            Stream::putContents($this->project->getIdeFile("tasks.json")->getAbsolutePath(), Json::encode([
+                "gradle-packageDebug" => [
+                    "type" => "android",
+                    "task" => "packageDebug",
+                    "title" => "packageDebug task"
+
+                ],
+                "jppm-update" => [
+                    "type" => "jppm",
+                    "task" => "update",
+                    "title" => "jppm update"
+                ]
+            ]));
 
             $this->project->register(new JavaPlatformBehaviour());
             $this->project->register(new PhpProjectBehaviour());

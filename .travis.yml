@@ -1,6 +1,6 @@
 language: java
 
-jdk: oraclejdk10
+jdk: oraclejdk9
 
 sudo: true
 

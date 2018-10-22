@@ -113,8 +113,6 @@ class PhpProjectBehaviour extends AbstractProjectBehaviour
         $this->project->on('updateSettings', [$this, 'doUpdateSettings']);
 
         $this->project->registerFormat(new PhpCodeFormat());
-
-        $this->registerTreeMenu();
     }
 
     public function getImportType()
@@ -158,13 +156,6 @@ class PhpProjectBehaviour extends AbstractProjectBehaviour
         }
 
         return $package;
-    }
-
-    protected function registerTreeMenu()
-    {
-        $menu = $this->project->getTree()->getContextMenu();
-        $menu->add(new TreeCreatePhpFileMenuCommand($this->project->getTree()), 'new');
-        $menu->add(new TreeCreatePhpClassMenuCommand($this->project->getTree()), 'new');
     }
 
     public function doClose()

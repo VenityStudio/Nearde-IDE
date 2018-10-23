@@ -18,19 +18,6 @@ function task_publish(Event $e)
 {
     Tasks::runExternal('./designer', 'publish', [], ...$e->flags());
     Tasks::runExternal('./dnd-gui-tabs-ext', 'publish', [], ...$e->flags());
-
-    Tasks::run('bundle:publish', [], 'yes');
-}
-
-/**
- * @jppm-task bundle:publish
- * @jppm-description Local Publishing for ide bundles.
- */
-function task_bundlePublish(Event $e)
-{
-    foreach ($e->package()->getAny('bundles', []) as $bundle) {
-        Tasks::runExternal("./bundles/$bundle", 'publish', [], ...$e->flags());
-    }
 }
 
 /**

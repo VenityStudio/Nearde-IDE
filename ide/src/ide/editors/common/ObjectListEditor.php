@@ -5,25 +5,11 @@ namespace ide\editors\common;
 use ide\editors\AbstractEditor;
 use ide\editors\FormEditor;
 use ide\editors\ScriptModuleEditor;
-use ide\formats\form\AbstractFormElement;
 use ide\Ide;
 use ide\Logger;
-use ide\project\behaviours\GuiFrameworkProjectBehaviour;
-use ide\scripts\AbstractScriptComponent;
-use ide\scripts\elements\MacroScriptComponent;
-use ide\scripts\ScriptComponentContainer;
 use ide\systems\FileSystem;
 use ide\utils\FileUtils;
-use php\gui\layout\UXHBox;
-use php\gui\paint\UXColor;
-use php\gui\UXApplication;
 use php\gui\UXComboBox;
-use php\gui\UXImageView;
-use php\gui\UXLabel;
-use php\gui\UXListCell;
-use php\gui\UXNode;
-use php\lib\Items;
-
 class ObjectListEditor
 {
     /** @var UXComboBox */
@@ -298,146 +284,8 @@ class ObjectListEditor
             $this->addItem(new ObjectListEditorItem('ui.object.list.self::Текущий объект (self)', null, $this->senderCode));
             $this->addItem(new ObjectListEditorItem('ui.object.list.target::Целевой объект (target)', null, $this->targetCode));
             $this->addItem(new ObjectListEditorItem('ui.object.list.instance::Созданный объект ($instance)', null, "~instance"));
-
-            if (!$this->disableForms) {
-                $this->addItem(new ObjectListEditorItem('ui.current.form::Текущая форма', null, $this->senderCode . "Form"));
-            }
         }
 
-        $formsAdded = [];
-
-        if ($editor instanceof FormEditor) {
-            $isModule = $editor instanceof ScriptModuleEditor;
-            $isForm   = !$isModule;
-
-            if (($isModule && !$this->disableModules) || ($isForm && !$this->disableForms)) {
-                $this->addItem(new ObjectListEditorItem(
-                    $editor->getTitle(),
-                    Ide::get()->getImage($editor->getIcon(), [16, 16]),
-                    ''
-                ));
-
-                $nodes = $editor->getObjectList();
-
-                foreach ($nodes as $item) {
-                    $item->level = 1;
-
-                    if ($this->stringValues) {
-                        $item->value = "{$editor->getTitle()}.{$item->value}";
-                    }
-
-                    $this->addItem($item);
-                }
-            }
-
-            if (!$this->disableDependencies) {
-                $moduleEditors = $editor->getModuleEditors();
-
-                if ($moduleEditors && !$this->disableModules) {
-                    $this->addItem(new ObjectListEditorItem('ui.object.list.modules::[Модули]', null, ''));
-
-                    foreach ($moduleEditors as $module => $moduleEditor) {
-                        $nodes = $moduleEditor->getComponents();
-
-                        if ($nodes) {
-                            $this->addItem(new ObjectListEditorItem(
-                                "[$module]",
-                                Ide::get()->getImage($moduleEditor->getIcon(), [16, 16]),
-                                '',
-                                1
-                            ));
-
-                            $this->appendFormEditor($moduleEditor, 2);
-                        }
-                    }
-                }
-
-                if ($editor instanceof ScriptModuleEditor && !$this->disableForms) {
-                    $formEditors = $editor->getFormEditors();
-
-                    if ($formEditors) {
-                        $this->addItem(new ObjectListEditorItem('ui.object.list.module.forms::Формы модуля', null, '_context'));
-
-                        foreach ($formEditors as $formEditor) {
-                            $formsAdded[$formEditor->getTitle()] = $formEditor;
-
-                            $this->addItem(new ObjectListEditorItem(
-                                "{$formEditor->getTitle()}",
-                                Ide::get()->getImage($formEditor->getIcon(), [16, 16]),
-                                $this->formMethod,
-                                1
-                            ));
-
-                            $this->appendFormEditor($formEditor, 2);
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($this->enableAllForms && !$this->disableForms) {
-            $project = Ide::get()->getOpenedProject();
-
-            if ($project && $project->hasBehaviour(GuiFrameworkProjectBehaviour::class)) {
-                /** @var GuiFrameworkProjectBehaviour $gui */
-                $gui = $project->getBehaviour(GuiFrameworkProjectBehaviour::class);
-
-                $formEditors = $gui->getFormEditors();
-
-                if (/*!($editor instanceof FormEditor) || sizeof($formEditors) > 1*/true) {
-                    $this->addItem(new ObjectListEditorItem('ui.object.list.other.forms::[Другие формы]', null, ''));
-
-                    foreach ($formEditors as $key => $formEditor) {
-                        if (FileUtils::hashName($formEditor->getFile()) == FileUtils::hashName($editor->getFile())) {
-                            continue;
-                        }
-
-                        if (isset($formsAdded[$formEditor->getTitle()])) {
-                            continue;
-                        }
-
-                        if ($this->stringValues) {
-                            $prefix = "{$formEditor->getTitle()}.";
-                        } else {
-                            $prefix = "{$this->formMethod}('{$formEditor->getTitle()}')";
-                        }
-
-                        $this->addItem(new ObjectListEditorItem(
-                            $formEditor->getTitle(),
-                            Ide::get()->getImage($formEditor->getIcon(), [16, 16]),
-                            $prefix,
-                            1
-                        ));
-
-                        $this->appendFormEditor($formEditor, 2, $prefix);
-                    }
-                }
-            }
-        }
-
-        if ($this->enableAppModule && !$this->disableModules) {
-            $gui = GuiFrameworkProjectBehaviour::get();
-
-            if ($gui && $gui->hasModule('AppModule')) {
-                $appModule = $gui->getModuleEditor('AppModule');
-
-                if ($appModule instanceof ScriptModuleEditor) {
-                    if ($editor && ($appModule && $editor && FileUtils::equalNames($appModule->getFile(), $editor->getFile()))) {
-                        // ...
-                    } else {
-                        if ($appModule) {
-                            $this->addItem(new ObjectListEditorItem(
-                                $appModule->getTitle(), Ide::get()->getImage($appModule->getIcon(), [16, 16]), 'appModule()'
-                            ));
-
-                            $this->appendFormEditor($appModule, 1, 'appModule()');
-                        }
-                    }
-                }
-            }
-        }
-
-        $this->comboBox->items->addAll($this->comboBoxItems);
         Logger::trace("update done.");
     }
 

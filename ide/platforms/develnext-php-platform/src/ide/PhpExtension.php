@@ -17,7 +17,6 @@ class PhpExtension extends AbstractExtension
         Ide::get()->registerProjectSupport(PHPProjectSupport::class);
         Ide::get()->registerProjectSupport(JPPMProjectSupport::class);
         Ide::get()->registerProjectSupport(JPPMAppPluginSupport::class);
-        Ide::get()->registerProjectSupport(JavaFXProjectSupport::class);
     }
 
     public function onIdeStart()

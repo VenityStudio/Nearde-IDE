@@ -6,19 +6,15 @@ description: DN Fork
 plugins: [App]
 
 sources:
-- src
-- platforms/develnext-desktop-platform/src
-- platforms/develnext-java-platform/src
-- platforms/develnext-php-platform/src
-- platforms/develnext-web-platform/src
-- platforms/develnext-wizard-platform/src
-- platforms/nearde-android-platform/src
+  - src
+  - platforms/develnext-java-platform/src
+  - platforms/develnext-php-platform/src
+  - platforms/nearde-android-platform/src
 
 includes:
 - index.php
 
 deps:
-  wizard-core: '~0.1.0'
   wizard-localization: '~0.1.0'
   jphp-core: '~1.0.0'
   jphp-xml-ext: '~1.0.0'
@@ -42,6 +38,10 @@ app:
   disable-launcher: true
   jvm-args:
     - '-Ddevelnext.noCodeCache=true'
+    - '--add-exports=java.desktop/java.awt.dnd.peer=javafx.swing'
+    - '--add-exports=java.desktop/sun.awt=javafx.swing'
+    - '--add-exports=java.desktop/sun.awt.dnd=javafx.swing'
+    - '--add-exports=java.desktop/sun.swing=javafx.swing'
     - '--add-exports=javafx.base/com.sun.javafx=ALL-UNNAMED'
     - '--add-exports=javafx.base/com.sun.javafx.collections=ALL-UNNAMED'
     - '--add-exports=javafx.graphics/com.sun.javafx.css=ALL-UNNAMED'

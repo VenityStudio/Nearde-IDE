@@ -104,10 +104,6 @@ class JPPMProjectSupport extends AbstractProjectSupport
             $this->pkgTemplate->save();
         }, __CLASS__);
 
-        $project->on('save', function () {
-            //$this->pkgTemplate->save();
-        }, __CLASS__);
-
         $this->pkgTemplate->setSources(['src_generated', 'src']);
         $project->setSrcDirectory('src');
         $project->setSrcGeneratedDirectory('src_generated');

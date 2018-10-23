@@ -57,4 +57,12 @@ class TextEditor extends AbstractEditor
     {
         return $this->editor;
     }
+
+    /**
+     * @return CodeArea
+     */
+    public function getEditor(): CodeArea
+    {
+        return $this->editor;
+    }
 }

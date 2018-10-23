@@ -90,10 +90,6 @@ class ReflectionClassAutoCompleteType extends AutoCompleteType
         foreach ($this->reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $name = $method->getName();
 
-            if (str::startsWith($name, '__') || $method->isAbstract()) {
-                continue;
-            }
-
             if ($this->onlyStatic && !$method->isStatic()) {
                 continue;
             } elseif (!$this->onlyStatic && $method->isStatic()) {

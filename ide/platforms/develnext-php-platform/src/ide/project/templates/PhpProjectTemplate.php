@@ -24,7 +24,7 @@ class PhpProjectTemplate extends AbstractProjectTemplate
 
     public function getName()
     {
-        return "PHP Проект";
+        return "JPPM Project";
     }
 
     public function getDescription()

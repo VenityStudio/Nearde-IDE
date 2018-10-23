@@ -58,51 +58,9 @@ class ThisAutoCompleteType extends AutoCompleteType
 
         $result = [];
 
-        if ($class && $class['variables']) {
-            foreach ($class['variables'] as $one) {
-                $result[$one['name']] = new PropertyAutoCompleteItem($one['name'], 'Переменная класса ' . $class['name']);
-            }
-        }
-
-        $editor = FileSystem::getSelectedEditor();
-
-        if ($editor instanceof FormEditor) {
-            $list = $editor->getObjectList();
-
-            foreach ($list as $one) {
-                $result[$one->text] = new PropertyAutoCompleteItem($one->text, $one->hint, null, $one->getIcon());
-            }
-
-            $moduleEditors = $editor->getModuleEditors();
-
-            foreach ($moduleEditors as $module => $moduleEditor) {
-                $list = $moduleEditor->getObjectList();
-
-                foreach ($list as $one) {
-                    $result[$one->text] = new PropertyAutoCompleteItem(
-                        $one->text,
-                        $one->hint . ' (из ' . $moduleEditor->getTitle() . ')',
-                        null,
-                        $one->getIcon()
-                    );
-                }
-            }
-
-            if ($editor instanceof ScriptModuleEditor) {
-                foreach ($editor->getFormEditors() as $formEditor) {
-                    $list = $formEditor->getObjectList();
-
-                    foreach ($list as $one) {
-                        $result[$one->text] = new PropertyAutoCompleteItem(
-                            $one->text,
-                            $one->hint . ' (из ' . $formEditor->getTitle() . ')',
-                            null,
-                            $one->getIcon()
-                        );
-                    }
-                }
-            }
-        }
+        if ($class && $class['variables'])
+            foreach ($class['variables'] as $one)
+                $result[$one['name']] = new PropertyAutoCompleteItem($one['name'], $class['name']);
 
         return $result;
     }
@@ -119,20 +77,21 @@ class ThisAutoCompleteType extends AutoCompleteType
         $result = [];
 
         if ($class && $class['methods']) {
-            foreach ($class['methods'] as $one) {
-                $result[$one['name']] = new MethodAutoCompleteItem($one['name'], 'Метод класса ' . $class['name'], $one['name'] . '(');
-            }
+            foreach ($class['methods'] as $one)
+                $result[$one['name']] = new MethodAutoCompleteItem($one['name'], $class['name'], $one['name'] . '(');
 
             $reflection = new \ReflectionClass(AbstractForm::class);
 
             foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-                if ($method->isStatic() || $method->isAbstract()) {
+                if ($method->isStatic())
                     continue;
-                }
 
-                if (str::startsWith($method->getName(), '__')) {
+                $result[$method->getName()] = PhpCompleteUtils::methodAutoComplete($method);
+            }
+
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_PROTECTED) as $method) {
+                if ($method->isStatic())
                     continue;
-                }
 
                 $result[$method->getName()] = PhpCompleteUtils::methodAutoComplete($method);
             }

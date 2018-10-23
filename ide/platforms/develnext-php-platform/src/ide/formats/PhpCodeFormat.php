@@ -4,6 +4,9 @@ namespace ide\formats;
 use ide\autocomplete\php\PhpAutoComplete;
 use ide\editors\AbstractEditor;
 use ide\editors\CodeEditor;
+use ide\editors\highlighters\PhpHighlighter;
+use ide\editors\support\CodeArea;
+use ide\editors\TextEditor;
 use ide\Ide;
 use ide\project\behaviours\PhpProjectBehaviour;
 use php\gui\designer\UXPhpCodeArea;
@@ -28,19 +31,15 @@ class PhpCodeFormat extends AbstractFormat
         $codeEditorOptions = [
             'textArea' => new UXPhpCodeArea()
         ];
-
         $codeEditorOptions['autoComplete'] = [
             'context' => 'php',
             'class' => PhpAutoComplete::class
         ];
-
         $editor = new CodeEditor($file, 'php', $codeEditorOptions);
         $editor->setEmbedded((bool) $options['embedded']);
-
         if ($options['readOnly']) {
             $editor->setReadOnly(true);
         }
-
         return $editor;
     }
 

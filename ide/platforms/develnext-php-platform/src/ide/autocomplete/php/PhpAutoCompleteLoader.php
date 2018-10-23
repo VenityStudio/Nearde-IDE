@@ -39,7 +39,6 @@ class PhpAutoCompleteLoader extends AutoCompleteTypeLoader
         $this->anyType = new PhpAnyAutoCompleteType('~any', $inspector);
         $this->variableType = new PhpAnyAutoCompleteType('~variable', $inspector);
         $this->thisType = new ThisAutoCompleteType();
-        $this->eventType = new EventVariableAutoCompleteType();
         $this->inspector = $inspector;
     }
 
@@ -56,8 +55,6 @@ class PhpAutoCompleteLoader extends AutoCompleteTypeLoader
                 return $this->variableType;
             case '~this':
                 return $this->thisType;
-            case '~event':
-                return $this->eventType;
 
             default:
                 if (str::startsWith($name, '~any ')) {
@@ -65,7 +62,7 @@ class PhpAutoCompleteLoader extends AutoCompleteTypeLoader
                 }
 
                 if (str::startsWith($name, '~this ')) {
-                    return new ThisObjectAutoCompleteType(Str::sub($name, 6));
+                    return new ThisAutoCompleteType();
                 }
 
                 if (str::startsWith($name, '~static ')) {
@@ -83,9 +80,8 @@ class PhpAutoCompleteLoader extends AutoCompleteTypeLoader
                 }
 
                 if (class_exists($name)) {
-                    if ($type = $this->reflectionTypes[$name]) {
+                    if ($type = $this->reflectionTypes[$name])
                         return $type;
-                    }
 
                     return $this->reflectionTypes[$name] = new ReflectionClassAutoCompleteType($name);
                 }

@@ -1,4 +1,0 @@
-<element extends="ProgressBarFormElement">
-    <properties group="style" title="Стиль">
-    </properties>
-</element>

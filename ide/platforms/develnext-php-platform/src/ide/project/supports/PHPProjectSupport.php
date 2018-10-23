@@ -3,12 +3,8 @@ namespace ide\project\supports;
 
 use develnext\lexer\inspector\PHPInspector;
 use ide\project\AbstractProjectSupport;
-use ide\project\behaviours\php\TreeCreatePhpClassMenuCommand;
-use ide\project\behaviours\php\TreeCreatePhpFileMenuCommand;
-use ide\project\behaviours\PhpProjectBehaviour;
 use ide\project\Project;
 use ide\project\ProjectFile;
-use ide\project\templates\DefaultGuiProjectTemplate;
 use ide\utils\FileUtils;
 use php\lang\Thread;
 use php\lib\fs;
@@ -40,18 +36,9 @@ class PHPProjectSupport extends AbstractProjectSupport
      */
     public function isFit(Project $project)
     {
-        return $project->getTemplate() instanceof DefaultGuiProjectTemplate
-            || $project->getFile("package.php.yml")->isFile()
+        return $project->getFile("package.php.yml")->isFile()
             || $project->getFile("composer.json")->isFile();
     }
-
-    protected function registerTreeMenu(Project $project)
-    {
-        $menu = $project->getTree()->getContextMenu();
-        $menu->add(new TreeCreatePhpFileMenuCommand($project->getTree()), 'new');
-        $menu->add(new TreeCreatePhpClassMenuCommand($project->getTree()), 'new');
-    }
-
 
     protected function getProjectPackage(Project $project)
     {
@@ -118,8 +105,7 @@ class PHPProjectSupport extends AbstractProjectSupport
     public function onLink(Project $project)
     {
         $this->inspector = new PHPInspector();
-        $this->inspector->loadDirectory($project->getRootDir());
-        $this->registerTreeMenu($project);
+        //$this->inspector->loadDirectory($project->getRootDir());
         $project->registerInspector('php', $this->inspector);
 
         $project->on('open', function () use ($project) {

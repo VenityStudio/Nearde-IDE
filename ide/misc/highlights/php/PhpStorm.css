@@ -24,10 +24,6 @@
     -fx-border-width: 0 1px 0 0;
 }
 
-.syntax-text-area .caret {
-    -fx-stroke: black;
-}
-
 .syntax-text-area .text.comment {
     -fx-fill: #818181;
     -fx-font-style: italic;
@@ -35,7 +31,6 @@
 
 .syntax-text-area .text.keyword {
     -fx-fill: #000080;
-    -fx-font-weight: bold;
 }
 
 .syntax-text-area .text.string {

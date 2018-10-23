@@ -155,14 +155,6 @@ class PhpBasicAutoCompleteTypeRule extends AutoCompleteTypeRule
                             if ($type) {
                                 return $type->fulledName;
                             }
-
-                            /*if ($type && $field instanceof NameToken) {
-                                $method = $inspector->findMethod($type, $field->getName());
-
-                                if ($method && $method->static) {
-                                    return $method->data['returnType'];
-                                }
-                            }*/
                         }
                     }
 
@@ -235,10 +227,6 @@ class PhpBasicAutoCompleteTypeRule extends AutoCompleteTypeRule
                         // function
                     }
                     break;
-
-                default:
-
-                    //var_dump($token->getTypeName());
             }
         }
 
@@ -550,10 +538,10 @@ class PhpBasicAutoCompleteTypeRule extends AutoCompleteTypeRule
 
     public function update(SourceTokenizer $tokenizer, SourceToken $token, SourceToken $previousToken = null)
     {
+
     }
 
-    public
-    function updateDone($sourceCode)
+    public function updateDone($sourceCode)
     {
 
     }

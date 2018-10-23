@@ -157,37 +157,29 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
                 $style = '';
 
                 if ($type->kind == 'INTERFACE') {
-                    $description = "$description (interface)";
+                    $description = " (interface) $description";
                 } elseif ($type->kind == 'TRAIT') {
-                    $description = "$description (trait)";
+                    $description = " (trait) $description";
                 } elseif ($type->abstract) {
-                    $description = "$description (abstract)";
+                    $description = "(abstract) $description";
                 }
 
                 if ($type->packages) {
                     $description = "$description, packages: " . str::join($type->packages, ', ');
                 }
 
-                $result[$name] = $c = new ConstantAutoCompleteItem(
-                    $name,
-                    $description,
+                $arrName = explode("\\", $name);
+
+                $result[$name] = $c = new ConstantAutoCompleteItem(array_pop($arrName), $description,
                     function (AutoCompleteInsert $insert) use ($import, $type) {
-                        $insert->setValue($import);
+                        $insertArr = explode("\\", $import);
+
+                        $insert->setValue(array_pop($insertArr));
 
                         $package = null;
 
-                        if ($php = PhpProjectBehaviour::get()) {
-                            if ($php->getImportType() == 'package') {
-                                if ($type->packages) {
-                                    $package = arr::first($type->packages);
-                                }
-                            }
-                        }
-
-                        $this->insertClassName($insert, $package);
-                    },
-                    'icons/class16.png',
-                    $style
+                        $this->insertClassName($insert, $import);
+                    }, 'icons/class16.png', $style
                 );
 
                 $c->setContent($type->data['content']);
@@ -198,7 +190,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
 
                 if ($constructor) {
                     $item = PhpCompleteUtils::methodAutoComplete2($constructor, false);
-                    $item->setName('Конструктор __construct');
+                    $item->setName('constructor');
                     $c->addSubItem($item);
                 }
             }
@@ -209,16 +201,12 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
                 $result[$name] = new ConstantAutoCompleteItem($name, "use {$one['name']}");
             }
 
-            /*foreach ($context->getGlobalRegion()->getValues('class') as $one) {
-                $result[$one->name] = new ConstantAutoCompleteItem($one->name, 'Класс ' . $one['namespace'] . "\\" . $one['name']);
-            }*/
-
             foreach ($context->getGlobalRegion()->getValues('constant') as $one) {
-                $result[$one['name']] = new ConstantAutoCompleteItem($one['name'], 'Константа');
+                $result[$one['name']] = new ConstantAutoCompleteItem($one['name'], 'const');
             }
 
             foreach ($region->getValues('constant') as $one) {
-                $result[$one['name']] = new ConstantAutoCompleteItem($one['name'], 'Константа');
+                $result[$one['name']] = new ConstantAutoCompleteItem($one['name'], 'const');
             }
         }
 
@@ -355,7 +343,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
             foreach ($this->inspector->getSnippets() as $snippet) {
                 $desc = new TranslationText($snippet->description);
 
-                $result[] = new StatementAutoCompleteItem($snippet->name, $desc->get(Ide::get()->getLanguage()->getCode()), $snippet->code, 'icons/script16.png');
+                $result[] = new StatementAutoCompleteItem($snippet->name, $desc->get(Ide::get()->getLanguage()->getCode()), $snippet->code, 'icons/edit16.png');
             }
 
             return $result;

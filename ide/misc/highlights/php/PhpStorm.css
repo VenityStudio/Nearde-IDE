@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
+* {
+    -fx-font-family: 'Roboto';
+}
+
 .syntax-text-area {
     -fx-background-color: #F7FAFF;
     -fx-cursor: text;
@@ -31,6 +37,7 @@
 
 .syntax-text-area .text.keyword {
     -fx-fill: #000080;
+    -fx-font-weight: bold;
 }
 
 .syntax-text-area .text.string {

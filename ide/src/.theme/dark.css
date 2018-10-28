@@ -113,14 +113,6 @@
     -fx-border-color: -fx-warning;
 }
 
-.nd-plugin-panel * {
-    -fx-text-fill: #fff;
-}
-.nd-plugin-panel  {
-    -fx-background-color: #333;
-}
-
-
 .table-view,
 .tree-table-view {
     /* Constants used throughout the tableview. */
@@ -158,26 +150,20 @@
     -fx-background-color: #3a3a3a;
 }
 
-
-.button {
-    -fx-font-family: "Source Sans Pro Regular";
-    -fx-background-color: #333;
-    -fx-text-fill: #fff;
-}
 .accent-btn {
     -fx-background-color: #088acc;
     -fx-text-fill: #fff;
-    -fx-font-family: "Source Sans Pro SemiBold";
+    -fx-font-family: "Roboto";
 }
 .warning-btn {
     -fx-background-color: #d6312b;
     -fx-text-fill: #fff;
-    -fx-font-family: "Source Sans Pro SemiBold";
+    -fx-font-family: "Roboto";
 }
 .green-btn {
     -fx-background-color: #55bd63;
     -fx-text-fill: #fff;
-    -fx-font-family: "Source Sans Pro SemiBold";
+    -fx-font-family: "Roboto";
 }
 
 .stop-btn {
@@ -364,4 +350,16 @@ combo-box-base:editable:focused > .text-field,
     -fx-background-color: #2d2d2d;
     -fx-text-fill: #fff;
     -fx-border-width: 0;
+}
+
+.list-cell:selected:focused, .list-cell:selected {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+}
+
+.list-cell:odd { -fx-background-color: #33333360;}
+.list-cell:even { -fx-background-color: #33333360;}
+
+.flow-list-view {
+    -fx-background-color: #333333;
 }

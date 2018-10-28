@@ -83,82 +83,11 @@ class OpenProjectForm extends AbstractIdeForm
     public function __construct($tab = null)
     {
         parent::__construct();
-
-        if ($tab) {
-            switch ($tab) {
-                case 'library':
-                    $this->tabPane->selectedIndex = 2;
-                    break;
-                case 'embeddedLibrary':
-                    $this->tabPane->selectedIndex = 1;
-                    break;
-                case 'shared':
-                    $this->tabPane->selectedIndex = 3;
-                    break;
-            }
-        }
     }
 
     public function init()
     {
         parent::init();
-
-        $cellFactory = function (UXListCell $cell, IdeLibraryProjectResource $resource) {
-            $titleName = new UXLabel($resource->getName());
-            $titleName->style = '-fx-font-weight: bold;' . UiUtils::fontSizeStyle() . ";";
-
-            $titleDescription = new UXLabel($resource->getDescription());
-            $titleDescription->style = '-fx-text-fill: gray;' . UiUtils::fontSizeStyle() . ";";
-
-            if (!$titleDescription->text) {
-                $titleDescription->text = _('project.open.empty.description');
-            }
-
-            $actions = new UXHBox();
-            $actions->spacing = 7;
-
-            $openLink = new UXHyperlink(_('project.open.action'));
-            $openLink->style = UiUtils::fontSizeStyle() . ";";
-            $openLink->on('click', function () use ($resource, $cell) {
-                $cell->listView->selectedIndex = $cell->listView->items->indexOf($resource);
-                $this->doCreate(UXEvent::makeMock($cell->listView));
-            });
-            $actions->add($openLink);
-
-            $deleteLink = new UXHyperlink(_('project.open.action.delete'));
-            $deleteLink->style = UiUtils::fontSizeStyle() . ";";
-            $deleteLink->on('click', function () use ($resource, $cell) {
-                $cell->listView->selectedIndex = $cell->listView->items->indexOf($resource);
-                $this->doDelete(UXEvent::makeMock($cell->listView));
-            });
-            $actions->add($deleteLink);
-
-            $title = new UXVBox([$titleName, $titleDescription, $actions]);
-            $title->spacing = 0;
-
-            $line = new UXHBox([ico('archive32'), $title]);
-            $line->alignment = 'CENTER_LEFT';
-            $line->spacing = 12;
-            $line->padding = 5;
-
-            $cell->text = null;
-            $cell->graphic = $line;
-            $cell->style = '';
-        };
-        $this->embeddedLibraryList->setCellFactory($cellFactory);
-        $this->libraryList->setCellFactory($cellFactory);
-
-        $this->sharedList->setCellFactory(function (UXListCell $cell, $item) {
-            if ($item instanceof ServiceResponse) {
-                if ($item->isNotSuccess()) {
-                    $cell->text = _('project.open.error.unavailable');
-                    $cell->textColor = 'gray';
-                }
-            } else {
-                $cell->text = null;
-                $cell->graphic = $this->sharedCellFactory($item);
-            }
-        });
 
         $this->projectListHelper = new FlowListViewDecorator($this->projectList->content);
         $this->projectListHelper->setEmptyListText(_('project.open.empty.list'));
@@ -186,66 +115,6 @@ class OpenProjectForm extends AbstractIdeForm
         $this->title = _('project.open.title');
     }
 
-    protected function sharedCellFactory(array $item)
-    {
-        $name = $item['name'] ?: _('project.open.unknown.project');
-
-        $titleName = new UXLabel($name);
-        $titleName->style = '-fx-font-weight: bold;' . UiUtils::fontSizeStyle() . ";";
-
-        $titleDescription = new UXLabel(_('project.open.updated.at') . ": " . (new Time($item['updatedAt']))->toString('dd.MM.yyyy HH:mm'));
-        $titleDescription->style = '-fx-text-fill: gray;' . UiUtils::fontSizeStyle() . ";";
-
-        $actions = new UXHBox();
-        $actions->spacing = 7;
-        $actions->style = UiUtils::fontSizeStyle();
-
-        $openLink = new UXHyperlink(_('project.open.action'));
-        $openLink->style = UiUtils::fontSizeStyle();
-        $openLink->on('click', function () use ($item) {
-            $this->showPreloader('project.open.wait');
-            $form = new SharedProjectDetailForm($item['uid']);
-
-            if ($form->showDialog()) {
-                $this->hide();
-            }
-
-            $this->hidePreloader();
-        });
-        $actions->add($openLink);
-
-        $deleteLink = _(new UXHyperlink('project.open.action.delete'));
-
-        $deleteLink->style = UiUtils::fontSizeStyle();
-        $deleteLink->on('click', function () use ($item, $name) {
-            if (MessageBoxForm::confirmDelete($name, $this)) {
-                $response = Ide::service()->projectArchive()->delete($item['id']);
-
-                if ($response->isSuccess()) {
-                    Notifications::showProjectIsDeleted();
-                    $this->updateShared();
-                } else {
-                    Logger::warn("Unable to delete project with uid = {$item['uid']}, {$response->toLog()}");
-                    Notifications::showProjectIsDeletedFail();
-                }
-            }
-        });
-        $actions->add($deleteLink);
-
-        $actions->add(_(new UXLabel("project.open.view.count"), $item['viewCount']));
-        $actions->add(_(new UXLabel("project.open.download.count"), $item['downloadCount']));
-
-        $title = new UXVBox([$titleName, $titleDescription, $actions]);
-        $title->spacing = 0;
-
-        $line = new UXHBox([ico('package32'), $title]);
-        $line->alignment = 'CENTER_LEFT';
-        $line->spacing = 12;
-        $line->padding = 5;
-
-        return $line;
-    }
-
     public function update(string $searchText = '')
     {
         $searchText = str::lower($searchText);
@@ -262,7 +131,7 @@ class OpenProjectForm extends AbstractIdeForm
             foreach ($projectDirectory->findFiles() as $file) {
                 if ($file->isDirectory()) {
                     $project = arr::first($file->findFiles(function (File $directory, $name) {
-                        return Str::endsWith($name, '.dnproject');
+                        return Str::endsWith($name, '.dnproject') || Str::endsWith($name, '.ndproject');
                     }));
 
                     if ($project) {
@@ -322,46 +191,12 @@ class OpenProjectForm extends AbstractIdeForm
         $th->start();
     }
 
-    public function updateLibrary()
-    {
-        $this->libraryList->items->clear();
-        $this->embeddedLibraryList->items->clear();
-
-        $th = new Thread(function () {
-            $libraryResources = Ide::get()->getLibrary()->getResources('projects');
-
-            foreach ($libraryResources as $resource) {
-                uiLater(function () use ($resource) {
-                    if (!$resource->isEmbedded()) {
-                        $this->libraryList->items->add($resource);
-                    } else {
-                        $this->embeddedLibraryList->items->add($resource);
-                    }
-                });
-            }
-
-            uiLater(function () {
-                $this->embeddedLibraryList->selectedIndex = 0;
-                $this->libraryList->selectedIndex = 0;
-            });
-        });
-
-        $th->start();
-    }
-
-    public function updateShared()
-    {
-        // noup
-    }
-
     /**
      * @event showing
      */
     public function doShowing()
     {
         $this->update($this->projectQueryField->text);
-        $this->updateLibrary();
-        $this->updateShared();
     }
 
     /**

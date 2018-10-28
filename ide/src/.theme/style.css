@@ -111,21 +111,6 @@
 .icon-new { -fx-graphic: url("/.data/img/icons/new16.png"); }
 .icon-new32 { -fx-graphic: url("/.data/img/icons/new32.png"); }
 
-.list-view .list-cell:filled:selected:focused, .list-view .list-cell:filled:selected {
-    -fx-background-color: silver;
-    -fx-cursor: hand;
-}
-
-.list-view.dn-simple-list:filled:selected:focused, .list-view.dn-simple-list .list-cell:filled:selected {
-    -fx-background-color: white;
-    -fx-cursor: default;
-}
-
-.list-view.dn-simple-list .list-cell:odd {
-    -fx-cell-hover-color: white;
-    -fx-background-color: white;
-}
-
 .tab-pane {
     -fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;
 }

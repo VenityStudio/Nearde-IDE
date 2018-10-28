@@ -20,7 +20,7 @@ class LineNumber
         $node->classes->add("lineno");
 
         foreach ([10, 100, 1000, 10000, 100000] as $i)
-            if ($line + 1 < $i) $node->paddingRight += 7;
+            if ($line + 1 < $i) $node->paddingRight += 8;
 
         if (!$this->gutters[$line + 1])
             $gutter = &$this->gutters[$line + 1] = new UXImageView();

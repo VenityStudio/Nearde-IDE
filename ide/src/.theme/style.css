@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,300&subset=cyrillic');
-.root, .FormEditor {
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
+.root {
     -fx-font-smoothing-type: gray; 
     -fx-smoothing-type: gray; 
     -fx-base: #f0f0f0;
@@ -35,12 +36,12 @@
             ),
             derive(-fx-color,-2%));
     
-    
-    // установка параметров шрифта
-    -fx-font-family: "Source Sans Pro Regular";
-    
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+}
+
+* {
+    -fx-font-family: 'Roboto';
 }
 
 .flat-button { -fx-background-color: #f1f1f1; }
@@ -142,15 +143,6 @@
 .small-checkbox { -fx-label-padding: 0.0em 0.0em 0.0em 0.0em; }
 .small-checkbox .mark { -fx-padding: 0.26em; -fx-background-radius: 0, 0, 0, 0; }
 
-.dn-list-item { -fx-border-color: silver; -fx-cursor: hand; -fx-background-color: white; }
-.dn-list-item:hover { -fx-border-color: red; }
-
-.dn-list-menu { -fx-background-insets: 0; -fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background; }
-
-.dn-list-menu-title { -fx-font-weight: bold; -fx-padding: 0; -fx-text-fill: #131313; }
-.dn-list-menu-description { -fx-text-fill: gray; }
-.dn-list-menu-count { -fx-background-color: gray; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 2px 5px; -fx-background-radius: 3px; }
-
 .flow-list-view { -fx-background-color: white;  -fx-border-width: 1; -fx-border-color: silver; }
 .flow-list-view .list-cell { -fx-cursor: hand; -fx-border-width: 1px; -fx-border-color: transparent; }
 .flow-list-view .list-cell.selected { -fx-background-color: #dcdcdc; }
@@ -168,7 +160,7 @@
 .dn-simple-button { -fx-border-radius: 3px; }
 
 .dn-console-list {
-    -fx-font: 12px "Consolas";
+    -fx-font: 12px;
     -fx-line-spacing: 30px;
 }
 
@@ -178,7 +170,7 @@
 }
 
 .dn-autocomplete-description {
-    -fx-font: 13px "Consolas";
+    -fx-font: 13px;
     -fx-background-color: #feffc5;
 }
 
@@ -261,133 +253,6 @@
     -fx-border-width: 2;
     -fx-background-color: #1c67b1;
 }
-
-/*******************************************************************************
- *                                                                             *
- * TabPane                                                                     *
- *                                                                             *
- ******************************************************************************/
-
-.dn-file-tab-pane {
-    -fx-tab-min-height: 1.8333em; /* 22 */
-    -fx-tab-max-height: 1.8333em; /* 22 */
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
-    -fx-alignment: CENTER;
-    -fx-text-fill: -fx-text-base-color;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab {
-    -fx-background-insets: 0 1 1 0, 1 2 1 1, 2 3 1 2;
-    -fx-background-radius: 1 1 0 0, 1 1 0 0, 1 1 0 0;
-    -fx-padding: 0.083333em 0.5em 0.0769em 0.5em; /* 1 6 0.99 6 */
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:top {
-    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:right {
-    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, -fx-body-color-bottomup;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:bottom {
-    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, -fx-body-color-bottomup;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:left {
-    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:hover {
-    -fx-color: -fx-hover-base;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
-    -fx-text-fill: #16467b;
-}
-
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:selected {
-    /*-fx-background-color: -fx-outer-border, -fx-inner-border, -fx-background; */
-    -fx-background-color: -fx-outer-border, -fx-inner-border, white;
-    -fx-background-insets: 0 1 1 0, 1 2 0 1, 2 3 0 2;
-}
-.dn-file-tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
-    -fx-border-width: 0, 0;
-    -fx-border-color: -fx-focus-color, -fx-faint-focus-color;
-    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
-    -fx-border-radius: 2, 1; /* looks sharper if outer border has a tighter radius (2 instead of 3) */
-}
-.dn-file-tab-pane:focused > .tab-header-area > .headers-region > .tab:bottom:selected .focus-indicator {
-    -fx-border-insets: -6 -5 -4 -4, -5 -3 -2 -2;
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab:disabled:hover {
-    -fx-color: -fx-base;
-}
-.dn-file-tab-pane > .tab-header-area > .tab-header-background {
-    /* TODO should not be using text-box-border I think? */
-    -fx-background-color:
-            -fx-outer-border,
-            -fx-text-box-border,
-            linear-gradient(from 0px 0px to 0px 5px, -fx-text-box-border, derive(-fx-text-box-border, 30%));
-}
-.dn-file-tab-pane:top > .tab-header-area > .tab-header-background {
-    -fx-background-insets: 0, 0 0 1 0, 1;
-    -fx-border-color: white, #d6d6d6;
-    -fx-border-width: 0 0 5 0, 0 0 1 0;
-}
-.dn-file-tab-pane:bottom > .tab-header-area > .tab-header-background {
-    -fx-background-insets: 0, 1 0 0 0, 1;
-}
-.dn-file-tab-pane:left > .tab-header-area > .tab-header-background {
-    -fx-background-insets: 0, 0 1 0 0, 1;
-}
-.dn-file-tab-pane:right > .tab-header-area > .tab-header-background {
-    -fx-background-insets: 0, 0 0 0 1, 1;
-}
-.dn-file-tab-pane:top > .tab-header-area {
-    /*-fx-padding: 0.416667em 0.166667em 0.0em 0.416667em; *//* 5 2 0 5 */
-    -fx-padding: 4 5 0.316667em 0.216667em; /* 5 2 0 5 */
-}
-.dn-file-tab-pane:bottom > .tab-header-area {
-    -fx-padding: 0 0.166667em 0.416667em 0.416667em; /* 0 2 5 5 */
-}
-.dn-file-tab-pane:left > .tab-header-area {
-    -fx-padding: 0.416667em 0.0em 0.166667em 0.416667em; /* 5 0 2 5 */
-}
-.dn-file-tab-pane:right > .tab-header-area {
-    -fx-padding: 0.416667em 0.416667em 0.166667em 0.0em; /* 5 5 2 0 */
-}
-/* TODO: scaling the shape seems to make it way too large */
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button {
-    -fx-background-color: -fx-mark-color;
-    -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
-    -fx-scale-shape: false;
-    -fx-effect: dropshadow(two-pass-box , rgba(255, 255, 255, 0.4), 1, 0.0 , 0, 1);
-}
-.dn-file-tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button:hover {
-    -fx-background-color: derive(-fx-mark-color, -30%);
-}
-/* CONTROL BUTTONS */
-.dn-file-tab-pane > .tab-header-area > .control-buttons-tab > .container {
-    -fx-padding: 3 0 0 0;
-}
-.dn-file-tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button {
-    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: -1 0 5 0, 0 1 6 1, 1 2 7 2;
-    -fx-padding: 4 4 9 4;
-    -fx-background-radius: 10;
-}
-.dn-file-tab-pane:bottom > .tab-header-area > .control-buttons-tab > .container > .tab-down-button {
-    -fx-padding: -5 4 4 4; /* TODO convert to ems */
-}
-/* FLOATING TABS CUSTOMISATION */
-.dn-file-tab-pane.floating > .tab-header-area > .tab-header-background {
-    -fx-background-color: null;
-}
-.dn-file-tab-pane.floating > .tab-header-area {
-    -fx-background-color: null;
-}
-.dn-file-tab-pane.floating > .tab-content-area {
-    -fx-background-color: -fx-outer-border, -fx-background;
-    -fx-background-insets: 0, 1;
-    -fx-background-radius: 2, 0;
-    -fx-padding: 2;
-}
-
 
 .scroll-pane.dn-mosaic-background > .viewport {
     -fx-background-image: url("/.data/img/transparent-2.png");

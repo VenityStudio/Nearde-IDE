@@ -12,9 +12,11 @@ class IdeStandardExtension extends AbstractExtension
 
     public function onIdeStart()
     {
+
     }
 
     public function onIdeShutdown()
     {
+
     }
 }

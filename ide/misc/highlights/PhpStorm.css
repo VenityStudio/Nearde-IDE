@@ -25,7 +25,6 @@
 
 .syntax-text-area .gutter {
     -fx-background-color: #f0f0f0;
-
     -fx-border-color: #d0d0d0;
     -fx-border-width: 0 1px 0 0;
 }

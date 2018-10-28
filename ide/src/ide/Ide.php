@@ -24,6 +24,9 @@ use ide\systems\Cache;
 use ide\systems\FileSystem;
 use ide\systems\IdeSystem;
 use ide\systems\ProjectSystem;
+use ide\themes\DarkTheme;
+use ide\themes\LightTheme;
+use ide\themes\ThemeManager;
 use ide\tool\IdeToolManager;
 use ide\ui\LazyLoadingImage;
 use ide\ui\Notifications;
@@ -163,6 +166,11 @@ class Ide extends Application
      */
     protected $mode = 'prod';
 
+    /**
+     * @var ThemeManager
+     */
+    private $themeManager;
+
     public function __construct($configPath = null)
     {
         parent::__construct($configPath);
@@ -175,6 +183,11 @@ class Ide extends Application
         $this->localizer = new IdeLocalizer();
         $this->localizer->setUseDefaultValuesForLang('ru');
 
+        $this->themeManager = new ThemeManager();
+        $this->themeManager->register($light = new LightTheme());
+        $this->themeManager->register($dark = new DarkTheme());
+        $this->themeManager->setDefault($dark->getName());
+
         $this->asyncThreadPool = ThreadPool::createCached();
     }
 
@@ -186,37 +199,12 @@ class Ide extends Application
                 Logger::info("Start IDE, mode = $this->mode, os = $this->OS, version = {$this->getVersion()}");
                 Logger::info(str::format("Commands Args = [%s]", str::join((array)$GLOBALS['argv'], ', ')));
 
-                restore_exception_handler();
-
                 set_exception_handler(function ($e) {
-                    static $showError;
-
-                    if ($e instanceof JSException) {
-                        echo $e->getTraceAsString();
-                        return;
-                    }
-
                     Logger::exception($e->getMessage(), $e);
 
-                    if (!$showError) {
-                        $showError = true;
-                        $notify = Notifications::error('error.unknown.title', 'error.unknown.message');
-
-                        $notify->on('click', function () use ($e) {
-                            (new UXError($e))->show();
-                        });
-
-                        $this->sendError($e);
-
-                        $notify->on('hide', function () use (&$showError) {
-                            $showError = false;
-                        });
-                    }
+                    $alert = new UXError($e);
+                    $alert->showAndWait();
                 });
-
-                if ($this->isDevelopment()) {
-                    restore_exception_handler();
-                }
 
                 $this->readLanguages();
 
@@ -248,7 +236,7 @@ class Ide extends Application
                         $file = FileSystem::getSelected();
 
                         foreach (FileSystem::getOpened() as $info) {
-                            if (!fs::exists($info['file']) /*&& !FileUtils::equalNames($file, $info['file'])*/) {
+                            if (!fs::exists($info['file'])) {
                                 uiLater(function () use ($info) {
                                     $editor = FileSystem::getOpenedEditor($info['file']);
                                     if ($editor->isAutoClose()) {
@@ -1382,14 +1370,6 @@ class Ide extends Application
             $ideConfig->set('projectDirectory', "$defaultProjectDir.{$this->getVersionHash()}.SNAPSHOT");
         }
 
-
-        /*$manager = new UXKeyboardManager($this->getMainForm());
-        $manager->onDown('Ctrl+Tab', function (UXKeyEvent $e) {
-            uiLater(function () {
-                FileSystem::openNext();
-            });
-        });*/
-
         $this->afterShow(function () {
             $projectFile = $this->getUserConfigValue('lastProject');
 
@@ -1451,23 +1431,6 @@ class Ide extends Application
     public static function project()
     {
         return self::get()->getOpenedProject();
-    }
-
-    /**
-     * @return AccountManager
-     * @throws \Exception
-     */
-    public static function accountManager()
-    {
-        return Ide::get()->getAccountManager();
-    }
-
-    /**
-     * @return ServiceManager
-     */
-    public static function service()
-    {
-        return Ide::get()->serviceManager;
     }
 
     /**
@@ -1679,5 +1642,13 @@ class Ide extends Application
         }
 
         return null;
+    }
+
+    /**
+     * @return ThemeManager
+     */
+    public function getThemeManager(): ThemeManager
+    {
+        return $this->themeManager;
     }
 }

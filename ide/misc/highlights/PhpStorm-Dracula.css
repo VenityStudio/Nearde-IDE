@@ -1,21 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
+* {
+    -fx-font-family: 'Roboto';
+}
+
 .syntax-text-area {
     -fx-background-color: #303232;
     -fx-background-fill: #A9B7C6;
     -fx-cursor: text;
 }
 
-/*.syntax-text-area .paragraph-box:has-caret {
-    -fx-background-color: #fcfad9;
-}*/
+.syntax-text-area .paragraph-box:has-caret {
+    -fx-background-color: #1c1e1e;
+}
 
 .syntax-text-area .text {
     -fx-fill: #A9B7C6;
 }
 
 .syntax-text-area .gutter {
-    -fx-background-fill: #A9B7C6;
     -fx-background-color: #303232;
-    -fx-padding: 0 3 0 3;
+    -fx-border-color: #292929;
+    -fx-border-width: 0 1px 0 0;
 }
 
 .syntax-text-area .caret {
@@ -37,7 +43,6 @@
 
 .syntax-text-area .text.keyword {
     -fx-fill: #CC7832;
-    -fx-font-weight: bold;
 }
 
 .syntax-text-area .text.string {
@@ -50,7 +55,6 @@
 
 .syntax-text-area .text.variable {
     -fx-fill: #9876AA;
-    /*-fx-font-weight: bold;*/
 }
 
 .syntax-text-area .text.label {

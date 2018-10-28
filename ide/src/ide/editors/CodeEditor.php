@@ -980,8 +980,6 @@ class CodeEditor extends AbstractEditor
             $dir = Ide::getOwnFile('misc/highlights');
         }
 
-        $dir = "$dir/$lang";
-
         return File::of($dir)->findFiles(function (File $directory, $name) {
             return fs::ext($name) == 'css';
         });
@@ -994,13 +992,18 @@ class CodeEditor extends AbstractEditor
      */
     public static function getHighlightFile($lang, $name)
     {
+        return CodeEditor::getHighlight($name);
+    }
+
+    public static function getHighlight($name)
+    {
         $dir = Ide::getOwnFile('highlights');
 
         if (Ide::get()->isDevelopment() && fs::isDir(Ide::getOwnFile('misc/highlights'))) {
             $dir = Ide::getOwnFile('misc/highlights');
         }
 
-        return File::of("$dir/$lang/$name.css");
+        return File::of("$dir/$name.css");
     }
 
     /**
@@ -1009,13 +1012,7 @@ class CodeEditor extends AbstractEditor
      */
     public static function getCurrentHighlight($lang)
     {
-        $value = Ide::get()->getUserConfigValue(__CLASS__ . '#' . $lang . '.highlight', 'PhpStorm');
-
-        if (!self::getHighlightFile($lang, $value)->isFile()) {
-            return 'PhpStorm';
-        }
-
-        return $value;
+        return fs::nameNoExt(Ide::get()->getThemeManager()->getDefault()->getCodeEditorCssFile());
     }
 
     /**
@@ -1024,62 +1021,6 @@ class CodeEditor extends AbstractEditor
      */
     public static function setCurrentHighlight($lang, $value)
     {
-        Ide::get()->setUserConfigValue(__CLASS__ . '#' . $lang . '.highlight', $value);
-    }
-}
 
-class SetDefaultCommand extends AbstractCommand
-{
-    /**
-     * @var FormEditor
-     */
-    protected $formEditor;
-
-    protected $editor;
-
-    /**
-     * SetDefaultCommand constructor.
-     * @param FormEditor $formEditor
-     * @param $editor
-     */
-    public function __construct(FormEditor $formEditor, $editor)
-    {
-        $this->formEditor = $formEditor;
-        $this->editor = $editor;
-    }
-
-    public function getName()
-    {
-        return 'editor.use.by.default::Использовать по умолчанию';
-    }
-
-    public function makeUiForHead()
-    {
-        $ui = new UXCheckbox($this->getName());
-        $ui->padding = 3;
-
-        $ui->selected = $this->formEditor->getDefaultEventEditor(false) == "php";
-
-        UXApplication::runLater(function () use ($ui) {
-            $ui->watch('selected', function (UXNode $self, $property, $oldValue, $newValue) {
-                if ($newValue) {
-                    $this->formEditor->setDefaultEventEditor($this->editor);
-                } else {
-                    $this->formEditor->setDefaultEventEditor($this->editor == 'php' ? 'constructor' : 'php');
-                }
-            });
-        });
-
-        return $ui;
-    }
-
-    public function withBeforeSeparator()
-    {
-        return true;
-    }
-
-    public function onExecute($e = null, AbstractEditor $editor = null)
-    {
-        //
     }
 }

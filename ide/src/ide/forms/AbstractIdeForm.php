@@ -3,6 +3,7 @@ namespace ide\forms;
 
 use ide\Ide;
 use ide\Logger;
+use ide\utils\FileUtils;
 use php\gui\framework\AbstractForm;
 use php\gui\framework\DataUtils;
 use php\gui\UXForm;
@@ -21,7 +22,6 @@ use php\util\Regex;
  */
 class AbstractIdeForm extends AbstractForm
 {
-    protected $__ide;
 
     public function __construct(UXForm $origin = null)
     {
@@ -30,8 +30,6 @@ class AbstractIdeForm extends AbstractForm
         if (Ide::isCreated()) {
             $this->owner = Ide::get()->getMainForm();
         }
-
-        $this->__ide = Ide::get();
 
         Logger::info("Create form " . get_class($this));
 
@@ -50,6 +48,12 @@ class AbstractIdeForm extends AbstractForm
 
             Ide::get()->trigger('hideForm', [$this]);
         }, __CLASS__);
+
+        $this->clearStylesheets();
+
+        foreach (Ide::get()->getThemeManager()->getDefault()->getCssFiles() as $cssFile) {
+            $this->addStylesheet($cssFile);
+        }
     }
 
     public function showPreloader($text = '')

@@ -21,14 +21,15 @@ class TextEditor extends AbstractEditor
 
     /**
      * TextEditor constructor.
-     * @param string $file
+     * @param $file
+     * @throws \Exception
      */
     public function __construct($file)
     {
         parent::__construct($file);
         
         $this->editor = new CodeArea();
-        $this->editor->addStylesheet(CodeEditor::getHighlightFile("php", "PhpStorm"));
+        $this->editor->addStylesheet(Ide::get()->getThemeManager()->getDefault()->getCodeEditorCssFile());
         
         switch (fs::ext($file)) {
             case "json":

@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mwguy
- * Date: 05.10.18
- * Time: 19:17
- */
 
 namespace ide\ui;
-
 
 use php\gui\layout\UXAnchorPane;
 use php\gui\UXAlert;
@@ -27,8 +20,6 @@ class UXError extends UXAlert
         $this->headerText = _('error.unknown.help.text');
         $this->contentText = $throwable->getMessage();
         $this->setButtonTypes([_('btn.exit.dn'), _('btn.resume')]);
-        $pane = new UXAnchorPane();
-        $pane->maxWidth = 100000;
 
         $class = get_class($throwable);
 
@@ -38,8 +29,7 @@ class UXError extends UXAlert
 
         $content->padding = 10;
         UXAnchorPane::setAnchor($content, 0);
-        $pane->add($content);
-        $this->expandableContent = $pane;
+        $this->expandableContent = $content;
         $this->expanded = true;
     }
 

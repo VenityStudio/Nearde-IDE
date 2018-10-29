@@ -27,7 +27,7 @@ class IdeBehaviourDatabase
      */
     public function __construct()
     {
-        //$this->registerInternalList('.dn/behaviours');
+        //$this->registerInternalList('.nearde/behaviours');
     }
 
     /**

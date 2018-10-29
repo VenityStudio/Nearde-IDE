@@ -9,6 +9,7 @@ use ide\project\Project;
 use ide\project\supports\JPPMProjectSupport;
 use ide\systems\IdeSystem;
 use ide\systems\ProjectSystem;
+use ide\utils\Json;
 use php\concurrent\Promise;
 use php\lang\Process;
 use php\lib\arr;
@@ -93,6 +94,39 @@ class JPPMAppPluginSupport extends AbstractProjectSupport
                 return $process;
             },
         ]);
+
+        $tasksFile = $project->getIdeFile("tasks.json");
+
+        foreach (Json::fromFile($tasksFile) as $item => $value)
+        {
+            $project->getRunDebugManager()->add($item, [
+                'title' => $value['title'] ?? $item,
+                'icon' => "icons/gear16.png",
+                'makeStartProcess' => function () use ($project, $value) {
+                    $env = Ide::get()->makeEnvironment();
+
+                    foreach ($value['env'] as $key => $val)
+                        if (is_string($val))
+                            $env[$key] = $val;
+
+                    switch ($value['type']) {
+                        case "jppm":
+                            $args = ['jppm', $value['task']];
+                            break;
+
+                        default:
+                            $args = $value['command'];
+                    }
+
+                    if (Ide::get()->isWindows())
+                        $args = flow(['cmd', '/c'], $args)->toArray();
+
+                    return new Process($args, $project->getRootDir(), $env);
+                },
+            ]);
+        }
+
+        $project->getRunDebugManager()->setStarter("jppm-start");
     }
 
     /**
@@ -108,5 +142,6 @@ class JPPMAppPluginSupport extends AbstractProjectSupport
 
         $project->getRunDebugManager()->remove('jppm-start');
         $project->getRunDebugManager()->remove('jppm-build');
+        $project->getRunDebugManager()->setStarter(null);
     }
 }

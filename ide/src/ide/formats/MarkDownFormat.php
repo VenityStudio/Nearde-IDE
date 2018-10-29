@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mwguy
- * Date: 05.10.18
- * Time: 23:09
- */
 
 namespace ide\formats;
 

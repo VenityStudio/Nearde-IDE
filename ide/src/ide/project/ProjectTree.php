@@ -52,7 +52,7 @@ class ProjectTree
     /**
      * @var array
      */
-    protected $ignorePaths = ['.dn' => 1];
+    protected $ignorePaths = ['.nearde' => 1];
 
     /**
      * @var callable[]

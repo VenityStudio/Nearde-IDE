@@ -609,7 +609,7 @@ class Project
      */
     public function getIdeDir()
     {
-        return File::of("$this->rootDir/.dn");
+        return File::of("$this->rootDir/.nearde");
     }
 
     /**
@@ -842,7 +842,6 @@ class Project
     {
         $this->refreshSupports();
 
-        //FileSystem::open($this->getMainProjectFile());
         $this->trigger(__FUNCTION__);
     }
 

@@ -19,4 +19,29 @@ class IdeStandardExtension extends AbstractExtension
     {
 
     }
+
+    public function getName(): string
+    {
+        return Ide::get()->getName();
+    }
+
+    public function getAuthor(): string
+    {
+        return "jPHP Group & Venity Group";
+    }
+
+    public function getVersion(): string
+    {
+        return Ide::get()->getVersion();
+    }
+
+    public function getIcon32(): string
+    {
+        return null;
+    }
+
+    public function isSystem(): bool
+    {
+        return true;
+    }
 }

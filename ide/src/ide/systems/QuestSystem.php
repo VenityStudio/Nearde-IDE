@@ -79,7 +79,7 @@ class QuestSystem
     static function getTriggerClass($code)
     {
         if (!self::$triggerClasses) {
-            $triggerClasses = Ide::get()->getInternalList('.dn/quest/triggers');
+            $triggerClasses = Ide::get()->getInternalList('.nearde/quest/triggers');
 
             foreach ($triggerClasses as $class) {
                 $instance = new $class();

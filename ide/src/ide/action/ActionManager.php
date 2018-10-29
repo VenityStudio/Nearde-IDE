@@ -44,7 +44,7 @@ class ActionManager
 
     function __construct()
     {
-        //$this->registerInternalList('.dn/actionTypes');
+        //$this->registerInternalList('.nearde/actionTypes');
     }
 
     /**

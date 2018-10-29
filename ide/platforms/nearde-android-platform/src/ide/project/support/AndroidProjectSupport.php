@@ -44,6 +44,7 @@ class AndroidProjectSupport extends AbstractProjectSupport
 
         $project->getRunDebugManager()->remove('jppm-start');
         $project->getRunDebugManager()->remove('jppm-build');
+        $project->getRunDebugManager()->setStarter("gradle-packageDebug");
 
         $tasksFile = $project->getIdeFile("tasks.json");
 
@@ -113,5 +114,6 @@ class AndroidProjectSupport extends AbstractProjectSupport
         }
 
         $project->getRunDebugManager()->clear();
+        $project->getRunDebugManager()->setStarter(null);
     }
 }

@@ -74,7 +74,7 @@ class SplashTipSystem
             static::$first = true;
         }
 
-        self::addSource('res://.dn/splash/tips');
+        self::addSource('res://.nearde/splash/tips');
 
         $langTips = Ide::get()->getLanguage()->getDirectory() . '/tips';
 

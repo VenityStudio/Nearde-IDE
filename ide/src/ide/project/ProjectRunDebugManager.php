@@ -16,6 +16,11 @@ class ProjectRunDebugManager extends Component
     private $project;
 
     /**
+     * @var string
+     */
+    private $starter;
+
+    /**
      * @var array
      */
     private $items = [];
@@ -72,5 +77,17 @@ class ProjectRunDebugManager extends Component
     {
         $this->items = [];
         $this->trigger(new Event('change', $this));
+    }
+
+    public function setStarter(string $starter) {
+        $this->starter = $starter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStarter(): string
+    {
+        return $this->starter;
     }
 }

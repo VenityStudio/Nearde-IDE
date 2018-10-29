@@ -19,4 +19,29 @@ class JavaPlatformExtension extends AbstractExtension
     {
 
     }
+
+    public function getName(): string
+    {
+        return "JavaPlatform";
+    }
+
+    public function getAuthor(): string
+    {
+        return "jPHP Group";
+    }
+
+    public function getVersion(): string
+    {
+        return "17.0.0";
+    }
+
+    public function getIcon32(): string
+    {
+        return null;
+    }
+
+    public function isSystem(): bool
+    {
+        return false;
+    }
 }

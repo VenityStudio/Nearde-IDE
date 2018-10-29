@@ -97,7 +97,7 @@ abstract class AbstractArgumentEditor
     public static function get($code)
     {
         if (!self::$editors) {
-            $list = Ide::get()->getInternalList('.dn/argumentValueEditors');
+            $list = Ide::get()->getInternalList('.nearde/argumentValueEditors');
 
             foreach ($list as $class) {
                 self::register(new $class());

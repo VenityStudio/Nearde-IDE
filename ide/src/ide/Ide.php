@@ -1,14 +1,12 @@
 <?php
 namespace ide;
 
-use framework\localization\Localizer;
 use ide\bundle\AbstractBundle;
 use ide\editors\AbstractEditor;
 use ide\editors\value\ElementPropertyEditor;
 use ide\formats\AbstractFormat;
 use ide\formats\IdeFormatOwner;
 use ide\forms\MainForm;
-use ide\forms\SplashForm;
 use ide\l10n\IdeLocalizer;
 use ide\l10n\L10n;
 use ide\library\IdeLibrary;
@@ -18,8 +16,6 @@ use ide\project\AbstractProjectSupport;
 use ide\project\AbstractProjectTemplate;
 use ide\project\control\AbstractProjectControlPane;
 use ide\project\Project;
-use ide\protocol\AbstractProtocolHandler;
-use ide\protocol\handlers\FileOpenProjectProtocolHandler;
 use ide\systems\Cache;
 use ide\systems\FileSystem;
 use ide\systems\IdeSystem;
@@ -29,27 +25,21 @@ use ide\themes\LightTheme;
 use ide\themes\ThemeManager;
 use ide\tool\IdeToolManager;
 use ide\ui\LazyLoadingImage;
-use ide\ui\Notifications;
 use ide\ui\UXError;
 use ide\utils\FileUtils;
 use ide\utils\Json;
 use php\gui\framework\Application;
-use php\gui\JSException;
-use php\gui\layout\UXAnchorPane;
-use php\gui\UXAlert;
 use php\gui\UXButton;
 use php\gui\UXImage;
 use php\gui\UXImageView;
 use php\gui\UXMenu;
 use php\gui\UXMenuItem;
 use php\gui\UXSeparator;
-use php\gui\UXTextArea;
 use php\io\File;
 use php\io\IOException;
 use php\io\ResourceStream;
 use php\io\Stream;
 use php\lang\IllegalArgumentException;
-use php\lang\Process;
 use php\lang\System;
 use php\lang\Thread;
 use php\lang\ThreadPool;
@@ -77,11 +67,6 @@ class Ide extends Application
 
     /** @var string */
     private $OS;
-
-    /**
-     * @var SplashForm
-     */
-    protected $splash;
 
     /**
      * @var AbstractProjectTemplate[]
@@ -186,7 +171,7 @@ class Ide extends Application
         $this->themeManager = new ThemeManager();
         $this->themeManager->register($light = new LightTheme());
         $this->themeManager->register($dark = new DarkTheme());
-        $this->themeManager->setDefault($dark->getName());
+        $this->themeManager->setDefault($light->getName());
 
         $this->asyncThreadPool = ThreadPool::createCached();
     }
@@ -542,16 +527,6 @@ class Ide extends Application
     public function isProduction()
     {
         return Str::equalsIgnoreCase($this->mode, 'prod');
-    }
-
-    /**
-     * Вернуть splash форму IDE.
-     *
-     * @return SplashForm
-     */
-    public function getSplash()
-    {
-        return $this->splash;
     }
 
     /**
@@ -1291,32 +1266,37 @@ class Ide extends Application
 
     public function registerAll()
     {
+        if (fs::exists($this->getLibrary()->getResourceDirectory("plugins")))
+            fs::scan($this->getLibrary()->getResourceDirectory("plugins"), function (string $path) {
+                if (fs::ext($path) == "jar") System::addClassPath($path);
+            });
+
         $this->cleanup();
 
-        $extensions = $this->getInternalList('.dn/extensions');
+        $extensions = $this->getInternalList('.nearde/extensions');
 
         foreach ($extensions as $extension) {
             $this->registerExtension($extension);
         }
 
-        $valueEditors = $this->getInternalList('.dn/propertyValueEditors');
+        $valueEditors = $this->getInternalList('.nearde/propertyValueEditors');
         foreach ($valueEditors as $valueEditor) {
             $valueEditor = new $valueEditor();
 
             ElementPropertyEditor::register($valueEditor);
         }
 
-        $formats = $this->getInternalList('.dn/formats');
+        $formats = $this->getInternalList('.nearde/formats');
         foreach ($formats as $format) {
             $this->registerFormat(new $format());
         }
 
-        $projectTemplates = $this->getInternalList('.dn/projectTemplates');
+        $projectTemplates = $this->getInternalList('.nearde/projectTemplates');
         foreach ($projectTemplates as $projectTemplate) {
             $this->registerProjectTemplate(new $projectTemplate());
         }
 
-        $mainCommands = $this->getInternalList('.dn/mainCommands');
+        $mainCommands = $this->getInternalList('.nearde/mainCommands');
         $commands = [];
         foreach ($mainCommands as $commandClass) {
             /** @var AbstractCommand $command */

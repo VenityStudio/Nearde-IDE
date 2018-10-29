@@ -588,15 +588,6 @@ class CodeEditor extends AbstractEditor
 
         $this->ui = $ui = new UXVBox();
 
-        $commandPane = UiUtils::makeCommandPane($this->commands);
-        $commandPane->padding = 5;
-        $commandPane->spacing = 4;
-        $commandPane->fillHeight = true;
-
-        if ($this->commands) {
-            $ui->add($commandPane);
-        }
-
         $this->statusBar = $statusBar = new UXHBox();
         $label = new UXLabel("* Только для чтения");
         $label->font = $label->font->withBold();

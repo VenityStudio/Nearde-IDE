@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="54.0" layoutY="14.0" prefHeight="32.0" prefWidth="533.0" text="project.new.title" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="13.0">
          <font>
@@ -77,18 +77,9 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <TextField id="nameField" layoutX="26.0" layoutY="96.0" prefHeight="31.0" prefWidth="352.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="222.0">
+      <TextField id="nameField" layoutX="26.0" layoutY="96.0" prefHeight="31.0" prefWidth="548.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
-      <TextField id="packageField" layoutX="392.0" layoutY="96.0" prefHeight="31.0" prefWidth="183.0" text="app" AnchorPane.rightAnchor="25.0">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </TextField>
-      <Label layoutX="392.0" layoutY="72.0" prefHeight="24.0" prefWidth="183.0" text="project.new.package.name" AnchorPane.rightAnchor="25.0">
-         <font>
-            <Font size="12.0" />
-         </font></Label>
    </children>
 </AnchorPane>

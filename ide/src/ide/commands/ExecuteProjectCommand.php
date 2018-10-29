@@ -33,6 +33,7 @@ use php\lib\fs;
 use php\lib\number;
 use php\lib\Str;
 use php\time\Time;
+use process\ProcessHandle;
 use script\TimerScript;
 use timer\AccurateTimer;
 
@@ -121,104 +122,42 @@ class ExecuteProjectCommand extends AbstractCommand
     public function onStopExecute(UXEvent $e = null, callable $callback = null)
     {
         $this->onStop->trigger();
-
-        $ide = Ide::get();
-        $project = $ide->getOpenedProject();
-
         $this->stopButton->enabled = false;
-
-        $appPidFile = $project->getFile("application.pid");
 
         $mainForm = Ide::get()->getMainForm();
         $mainForm->showPreloader('Подождите, останавливаем программу ...');
 
-        $proc = function () use ($appPidFile, $ide, $mainForm, $callback) {
-            try {
-                $pid = fs::get($appPidFile);
+        try {
+            if ($this->process instanceof Process) {
+                $h = new ProcessHandle($this->process);
 
-                if ($pid) {
-                    if ($ide->isWindows()) {
-                        $result = `taskkill /PID $pid /f`;
-                    } else {
-                        $result = `kill -9 $pid`;
-                    }
+                foreach ($h->children() as $child)
+                    $child->destroyForcibly();
 
-                    if (!$result) {
-                        Notifications::showExecuteUnableStop();
-                    }
-                } else {
-                    if ($this->process instanceof Process) {
-                        $this->process->destroy();
-                    }
+                $h->destroyForcibly();
+            } else Notifications::showExecuteUnableStop();
+        } catch (\Throwable $e) {
+            Logger::exception('Cannot stop process', $e);
+            Notifications::showExecuteUnableStop();
+        } finally {
+            $this->startButton->enabled = true;
+            $this->processDialog->hide();
 
-                    Notifications::showExecuteUnableStop();
-                }
-            } catch (IOException $e) {
-                Logger::exception('Cannot stop process', $e);
-                Notifications::showExecuteUnableStop();
-            } finally {
-                $this->startButton->enabled = true;
-                $this->processDialog->hide();
-
-                Ide::get()->getMainForm()->hideBottom();
-            }
-
-            $appPidFile->delete();
-
-            $this->process = null;
-
-            $mainForm->hidePreloader();
-
-            if ($callback) {
-                $callback();
-            }
-        };
-
-        if ($appPidFile->exists()) {
-            $proc();
-        } else {
-            $time = 0;
-
-            $timer = new AccurateTimer(100, function () use ($appPidFile, $proc, &$time) {
-                $time += 100;
-
-                if ($appPidFile->exists() || $time > 1000 * 25) {
-                    $proc();
-                    return true;
-                }
-
-                return false;
-            });
-            $timer->start();
+            Ide::get()->getMainForm()->hideBottom();
         }
+
+        $this->process = null;
+
+        $mainForm->hidePreloader();
+
+        if ($callback)
+            $callback();
     }
 
     protected function createExecuteProcess(Project $project): Process
     {
-        $startConfig = $project->getRunDebugManager()->get('start');
-
-        if ($startConfig) {
-            return $startConfig['makeStartProcess']();
-        } else {
-            $classPaths = flow($this->behaviour->getSourceDirectories(), $this->behaviour->getProfileModules(['jar']))
-                ->toArray();
-
-            $args = [
-                'java',
-                '-cp',
-                str::join($classPaths, File::PATH_SEPARATOR),
-                '-XX:+UseG1GC', '-Xms128M', '-Xmx512m', '-Dfile.encoding=UTF-8', '-Djphp.trace=true',
-                'org.develnext.jphp.ext.javafx.FXLauncher'
-            ];
-
-            Logger::debug("Run -> " . str::join($args, ' '));
-
-            return new Process(
-                $args,
-                $project->getRootDir(),
-                Ide::get()->makeEnvironment()
-            );
-        }
+        if ($project->getRunDebugManager()->has($project->getRunDebugManager()->getStarter()))
+            return $project->getRunDebugManager()->get($project->getRunDebugManager()->getStarter())['makeStartProcess']();
     }
 
     public function onExecute($e = null, AbstractEditor $editor = null)

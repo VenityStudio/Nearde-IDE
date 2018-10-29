@@ -69,7 +69,7 @@ class MyAccountCommand extends AbstractCommand
         if (Ide::accountManager()->isAuthorized()) {
             $this->contextMenu->clear();
 
-            foreach (Ide::get()->getInternalList('.dn/account/menuCommands') as $class) {
+            foreach (Ide::get()->getInternalList('.nearde/account/menuCommands') as $class) {
                 $this->contextMenu->addCommand(new $class());
             }
 

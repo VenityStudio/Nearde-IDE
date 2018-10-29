@@ -133,14 +133,6 @@ class NewProjectForm extends AbstractIdeForm
             $this->templateList->items->add($template);
         }
 
-        /*$libraryResources = Ide::get()->getLibrary()->getResources('projects');
-
-        if ($libraryResources) {
-            $this->templateList->items->add('Библиотека проектов');
-        }
-
-        $this->templateList->items->addAll($libraryResources);  */
-
         if ($templates) {
             $this->templateList->selectedIndexes = [0];
         }
@@ -209,34 +201,20 @@ class NewProjectForm extends AbstractIdeForm
             return;
         }
 
-        $package = str::trim($this->packageField->text);
-
-        $regex = new Regex('^[a-z\\_]{2,15}$');
-
-        if (!$regex->test($package)) {
-            UXDialog::show(_('project.new.error.package.invalid') . "\n* " . _('project.new.error.package.invalid.description'), 'ERROR');
-            return;
-        }
-
         if ($template instanceof IdeLibraryResource) {
             ProjectSystem::import($template->getPath(), "$path/$name", $name);
 
             $this->hide();
         } else {
             $this->hide();
-            $filename = File::of("$path/$name/$name.dnproject");
-
-            /*if (!$filename->createNewFile(true)) {
-                UXDialog::show("Невозможно создать файл проекта по выбранному пути\n -> $filename", 'ERROR');
-                return;
-            }*/
+            $filename = File::of("$path/$name/$name.ndproject");
 
             ProjectSystem::close(false);
 
-            uiLater(function () use ($template, $filename, $package) {
+            uiLater(function () use ($template, $filename) {
                 app()->getMainForm()->showPreloader('Создание проекта ...');
                 try {
-                    ProjectSystem::create($template, $filename, $package);
+                    ProjectSystem::create($template, $filename, null);
                 } finally {
                     app()->getMainForm()->hidePreloader();
                 }

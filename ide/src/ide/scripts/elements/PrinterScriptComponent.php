@@ -57,7 +57,7 @@ class PrinterScriptComponent extends AbstractScriptComponent
     public function getScriptGenerators()
     {
         return [
-            new IdeLibraryScriptGeneratorResource('res://.dn/bundle/uiDesktop/scriptgen/module/PrintNodeSimpleScriptGen'),
+            new IdeLibraryScriptGeneratorResource('res://.nearde/bundle/uiDesktop/scriptgen/module/PrintNodeSimpleScriptGen'),
         ];
     }
 

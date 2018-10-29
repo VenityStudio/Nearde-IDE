@@ -1,7 +1,6 @@
 <?php
 namespace ide;
 
-use ide\project\supports\JavaFXProjectSupport;
 use ide\project\supports\jppm\JPPMAppPluginSupport;
 use ide\project\supports\JPPMProjectSupport;
 use ide\project\supports\PHPProjectSupport;
@@ -12,6 +11,10 @@ use ide\project\supports\PHPProjectSupport;
  */
 class PhpExtension extends AbstractExtension
 {
+    /**
+     * @throws IdeException
+     * @throws \Exception
+     */
     public function onRegister()
     {
         Ide::get()->registerProjectSupport(PHPProjectSupport::class);
@@ -25,5 +28,25 @@ class PhpExtension extends AbstractExtension
 
     public function onIdeShutdown()
     {
+    }
+
+    public function getName(): string
+    {
+        return "PHP";
+    }
+
+    public function getAuthor(): string
+    {
+        return "jPHP Group";
+    }
+
+    public function getVersion(): string
+    {
+        return "17.0.0";
+    }
+
+    public function getIcon32(): string
+    {
+        return "icons/phpProject32.png";
     }
 }

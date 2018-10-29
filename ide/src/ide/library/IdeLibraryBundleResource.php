@@ -79,7 +79,7 @@ class IdeLibraryBundleResource extends IdeLibraryResource
         parent::onRegister($library);
 
         fs::scan($this->getPath(), function ($filename) {
-            if (str::endsWith($filename, '-bundle.jar') || str::endsWith($filename, '.dn.jar')) {
+            if (str::endsWith($filename, '-bundle.jar') || str::endsWith($filename, '.nearde.jar')) {
                 Runtime::addJar($filename);
 
                 Logger::debug("Add bundle jar '$filename'");

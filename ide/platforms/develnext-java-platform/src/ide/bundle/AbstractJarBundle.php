@@ -70,7 +70,7 @@ abstract class AbstractJarBundle extends AbstractBundle
 
         if ($this->bundleDirectory) {
             fs::scan($this->bundleDirectory, function ($filename) use (&$result) {
-                if (fs::ext($filename) == 'jar' && !str::endsWith($filename, '-bundle.jar') && !str::endsWith($filename, '.dn.jar')) {
+                if (fs::ext($filename) == 'jar' && !str::endsWith($filename, '-bundle.jar') && !str::endsWith($filename, '.nearde.jar')) {
                     $result[] = new ProjectModule($filename, 'jarfile');
                 }
             }, 1);
@@ -97,7 +97,7 @@ abstract class AbstractJarBundle extends AbstractBundle
             $filename = null;
 
             foreach ((new File($this->bundleDirectory))->findFiles() as $file) {
-                if (str::endsWith($file->getName(), '-bundle.jar') || str::endsWith($file->getName(), '.dn.jar')) {
+                if (str::endsWith($file->getName(), '-bundle.jar') || str::endsWith($file->getName(), '.nearde.jar')) {
                     $filename = "$file";
                     break;
                 }

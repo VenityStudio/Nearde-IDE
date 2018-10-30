@@ -16,11 +16,10 @@ class LineNumber
     
     public function __invoke(int $line) {
         $node = new UXLabel($line + 1);
-        $node->paddingRight = 2;
+        $node->alignment = "BASELINE_RIGHT";
+        $node->paddingRight = 10;
         $node->classes->add("lineno");
-
-        foreach ([10, 100, 1000, 10000, 100000] as $i)
-            if ($line + 1 < $i) $node->paddingRight += 8;
+	$node->width = 50;
 
         if (!$this->gutters[$line + 1])
             $gutter = &$this->gutters[$line + 1] = new UXImageView();

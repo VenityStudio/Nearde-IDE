@@ -171,7 +171,7 @@ class Ide extends Application
         $this->themeManager = new ThemeManager();
         $this->themeManager->register($light = new LightTheme());
         $this->themeManager->register($dark = new DarkTheme());
-        $this->themeManager->setDefault($light->getName());
+        $this->themeManager->setDefault($dark->getName());
 
         $this->asyncThreadPool = ThreadPool::createCached();
     }

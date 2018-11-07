@@ -1071,6 +1071,8 @@ class Ide extends Application
         } elseif ($path instanceof LazyLoadingImage) {
             $image = $path->getImage();
         } else {
+            $path = Ide::get()->getThemeManager()->getDefault()->iconAlias($path);
+
             if ($cache) {
                 $image = Cache::getResourceImage("res://.data/img/" . $path);
             } else {

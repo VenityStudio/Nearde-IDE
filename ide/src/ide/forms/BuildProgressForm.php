@@ -90,7 +90,6 @@ class BuildProgressForm extends AbstractIdeForm implements ProjectConsoleOutput
 
 
         $consoleArea = new UXRichTextArea();
-        $consoleArea->style = '-fx-border-width: 1px; -fx-border-color: silver;';
         $consoleArea->id = 'consoleArea';
         $consoleArea->classes->add('dn-console-list');
 
@@ -396,7 +395,7 @@ class BuildProgressForm extends AbstractIdeForm implements ProjectConsoleOutput
         }
 
         if ($this->consoleArea) {
-            $this->consoleArea->appendText($text, "-fx-fill: $color");
+            $this->consoleArea->appendText($text, "-fx-fill: " . Ide::get()->getThemeManager()->getDefault()->colorAlias($color));
             $this->consoleArea->jumpToEndLine(0, 1);
         } else {
             $this->consoleList->items->add([$text, $color]);

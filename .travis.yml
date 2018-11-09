@@ -5,7 +5,7 @@ jdk: oraclejdk9
 sudo: true
 
 before_script: 
-  - "wget -O - https://github.com/jphp-compiler/jphp/releases/download/jppm-0.3.8/jppm-setup-0.3.8.sh | sudo bash"
+  - "wget -O - https://github.com/jphp-compiler/jphp/releases/download/jppm-0.4.0/jppm-setup-0.4.0.sh | sudo bash"
   
 script: 
   - "jppm prepare-ide"

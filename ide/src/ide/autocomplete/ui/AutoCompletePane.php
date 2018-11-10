@@ -428,15 +428,8 @@ class AutoCompletePane
             }
 
             $size = min([$this->list->items->count, 10]);
-
             $this->ui->layout->maxHeight = $size * ($this->list->fixedCellSize) + 6 + 2 + $this->list->fixedCellSize;
-
-            if ($this->area instanceof UXAbstractCodeArea) {
-                $this->ui->show($this->area->form, $x, $y);
-            } else {
-                $this->ui->show($this->area->form, $x, $y);
-            }
-
+            $this->ui->show($this->area->form, $x, $y);
             $this->shown = true;
         });
     }
@@ -489,22 +482,6 @@ class AutoCompletePane
 
     protected function prepareInsertForMultiline(string $insert): string
     {
-        $insertLines = str::lines($insert);
-
-        if (sizeof($insertLines) > 1) {
-            $line = $this->area->getParagraph($this->area->caretLine)['text'];
-
-            $prefix = str::sub($line, 0,str::length($line) - str::length(str::trimLeft($line)));
-
-            foreach ($insertLines as $i => $l) {
-                if ($i === 0) continue;
-
-                $insertLines[$i] = "{$prefix}{$l}";
-            }
-
-            $insert = str::join($insertLines, "\n");
-        }
-
         return $insert;
     }
 
@@ -537,8 +514,6 @@ class AutoCompletePane
 
                     $insert = $in->getValue();
                 } else {
-                    $insert = $this->prepareInsertForMultiline($insert);
-
                     if (str::contains($insert, '#')) {
                         $altCaret = -(str::length($insert) - str::lastPos($insert, '#')) + 1;
                         $insert = str::replace($insert, '#', '');
@@ -995,22 +970,10 @@ class AutoCompletePane
 
         if ($item instanceof VariableAutoCompleteItem) {
             $label->text = "\${$label->text}";
-            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("blue"));
         }
 
         if ($item instanceof MethodAutoCompleteItem) {
-            if ($item->isFunction()) {
-                $label->text = "{$label->text}()";
-            } else {
-                $label->text = "{$label->text}()";
-            }
-
-            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("black"));
-        }
-
-        if ($item instanceof PropertyAutoCompleteItem) {
-            $label->text = "{$label->text}";
-            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("green"));
+            $label->text = "{$label->text}()";
         }
     }
 }

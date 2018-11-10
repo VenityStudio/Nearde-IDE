@@ -11,4 +11,9 @@ class PropertyAutoCompleteItem extends AutoCompleteItem
     {
         return 'icons/field16.png';
     }
+
+    public function getIcon()
+    {
+        return $this->getDefaultIcon();
+    }
 }

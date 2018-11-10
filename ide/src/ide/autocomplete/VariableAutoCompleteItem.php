@@ -7,5 +7,8 @@ namespace ide\autocomplete;
  */
 class VariableAutoCompleteItem extends AutoCompleteItem
 {
-    
+    public function getDefaultIcon()
+    {
+        return "icons/variable16.png";
+    }
 }

@@ -2,6 +2,7 @@
 namespace ide\autocomplete;
 
 use php\gui\designer\UXAbstractCodeArea;
+use php\gui\UXGenericStyledArea;
 
 /**
  * Class AutoCompleteInserter
@@ -10,7 +11,7 @@ use php\gui\designer\UXAbstractCodeArea;
 class AutoCompleteInsert
 {
     /**
-     * @var UXAbstractCodeArea
+     * @var UXGenericStyledArea
      */
     protected $area;
 
@@ -31,15 +32,15 @@ class AutoCompleteInsert
 
     /**
      * AutoCompleteInsert constructor.
-     * @param UXAbstractCodeArea $area
+     * @param UXGenericStyledArea $area
      */
-    public function __construct(UXAbstractCodeArea $area)
+    public function __construct(UXGenericStyledArea $area)
     {
         $this->area = $area;
     }
 
     /**
-     * @return UXAbstractCodeArea
+     * @return UXGenericStyledArea
      */
     public function getArea()
     {

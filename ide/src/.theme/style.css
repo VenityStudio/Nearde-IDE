@@ -406,3 +406,5 @@ combo-box-base:editable:focused > .text-field,
 .styled-text-area {
     -fx-font-size: 14;
 }
+
+.list-cell:selected { -fx-background-color: #82adf220;}

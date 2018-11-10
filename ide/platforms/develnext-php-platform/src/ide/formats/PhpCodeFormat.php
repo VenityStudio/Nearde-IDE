@@ -2,14 +2,11 @@
 namespace ide\formats;
 
 use ide\autocomplete\php\PhpAutoComplete;
+use ide\autocomplete\ui\AutoCompletePane;
 use ide\editors\AbstractEditor;
-use ide\editors\CodeEditor;
-use ide\editors\highlighters\PhpHighlighter;
-use ide\editors\support\CodeArea;
 use ide\editors\TextEditor;
+use ide\highlighters\PhpHighlighter;
 use ide\Ide;
-use ide\project\behaviours\PhpProjectBehaviour;
-use php\gui\designer\UXPhpCodeArea;
 use php\lib\arr;
 use php\lib\fs;
 
@@ -20,6 +17,11 @@ use php\lib\fs;
 class PhpCodeFormat extends AbstractFormat
 {
     /**
+     * @var AutoCompletePane
+     */
+    private $autoComplete;
+
+    /**
      * @param $file
      *
      * @param array $options
@@ -28,18 +30,11 @@ class PhpCodeFormat extends AbstractFormat
      */
     public function createEditor($file, array $options = [])
     {
-        $codeEditorOptions = [
-            'textArea' => new UXPhpCodeArea()
-        ];
-        $codeEditorOptions['autoComplete'] = [
-            'context' => 'php',
-            'class' => PhpAutoComplete::class
-        ];
-        $editor = new CodeEditor($file, 'php', $codeEditorOptions);
-        $editor->setEmbedded((bool) $options['embedded']);
-        if ($options['readOnly']) {
-            $editor->setReadOnly(true);
-        }
+        $editor = new TextEditor($file);
+        $editor->getEditor()->setHighlighter(PhpHighlighter::class);
+
+        $this->autoComplete = new AutoCompletePane($editor->getEditor()->getRichArea(), new PhpAutoComplete(Ide::project()->getInspector("php")));
+
         return $editor;
     }
 
@@ -65,5 +60,13 @@ class PhpCodeFormat extends AbstractFormat
      */
     public function register($any)
     {
+    }
+
+    /**
+     * @return AutoCompletePane
+     */
+    public function getAutoComplete(): AutoCompletePane
+    {
+        return $this->autoComplete;
     }
 }

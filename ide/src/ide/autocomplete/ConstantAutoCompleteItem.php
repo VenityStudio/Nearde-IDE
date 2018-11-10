@@ -9,6 +9,6 @@ class ConstantAutoCompleteItem extends AutoCompleteItem
 {
     public function getIcon()
     {
-        return $this->icon ?: 'icons/sun16.png';
+        return $this->icon ?: 'icons/const16.png';
     }
 }

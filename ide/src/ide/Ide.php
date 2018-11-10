@@ -40,6 +40,7 @@ use php\io\IOException;
 use php\io\ResourceStream;
 use php\io\Stream;
 use php\lang\IllegalArgumentException;
+use php\lang\Process;
 use php\lang\System;
 use php\lang\Thread;
 use php\lang\ThreadPool;
@@ -156,6 +157,8 @@ class Ide extends Application
      */
     private $themeManager;
 
+
+
     public function __construct($configPath = null)
     {
         parent::__construct($configPath);
@@ -169,9 +172,9 @@ class Ide extends Application
         $this->localizer->setUseDefaultValuesForLang('ru');
 
         $this->themeManager = new ThemeManager();
-        $this->themeManager->register($light = new LightTheme());
-        $this->themeManager->register($dark = new DarkTheme());
-        $this->themeManager->setDefault($dark->getName());
+        $this->themeManager->register($l = new LightTheme());
+        $this->themeManager->register(new DarkTheme());
+        $this->themeManager->setDefault($this->getUserConfigValue("ide.theme", $l->getName()));
 
         $this->asyncThreadPool = ThreadPool::createCached();
     }
@@ -203,7 +206,6 @@ class Ide extends Application
                 }
             },
             function () {
-
                 $this->setOpenedProject(null);
 
                 foreach ($this->afterShow as $handle) {
@@ -348,68 +350,11 @@ class Ide extends Application
     {
         $env = System::getEnv();
 
-        if ($this->getJrePath()) {
-            $env['JAVA_HOME'] = $this->getJrePath();
-        }
-
-        if ($this->getGradlePath()) {
-            $env['GRADLE_HOME'] = $this->getGradlePath();
-        }
-
-        if ($this->getApacheAntPath()) {
-            $env['ANT_HOME'] = $this->getApacheAntPath();
-        }
+        if ($this->getJrePath()) $env['JAVA_HOME'] = $this->getJrePath();
+        if (System::getEnv()["APP_HOME"] && $this->isLinux()) $env["APP_HOME"] = System::getEnv()["APP_HOME"];
 
         return $env;
     }
-
-    public function getInnoSetupProgram()
-    {
-        $innoPath = new File($this->getToolPath(), '/innoSetup/ISCC.exe');
-
-        return $innoPath && $innoPath->exists() ? $innoPath->getCanonicalFile() : null;
-    }
-
-    public function getLaunch4JPath()
-    {
-        return fs::parent($this->getLaunch4JProgram());
-    }
-
-    public function getLaunch4JProgram()
-    {
-        if (Ide::get()->isWindows()) {
-            $launch4jPath = new File($this->getToolPath(), '/Launch4j/launch4jc.exe');
-        } else {
-            $launch4jPath = new File($this->getToolPath(), '/Launch4jLinux/launch4j');
-        }
-
-        return $launch4jPath && $launch4jPath->exists() ? $launch4jPath->getCanonicalFile() : null;
-    }
-
-    public function getApacheAntProgram()
-    {
-        $antPath = $this->getApacheAntPath();
-
-        if ($antPath) {
-            return FileUtils::normalizeName("$antPath/bin/ant" . ($this->isWindows() ? '.bat' : ''));
-        } else {
-            return 'ant';
-        }
-    }
-
-    public function getGradleProgram()
-    {
-        $gradlePath = $this->getGradlePath();
-
-        if ($gradlePath) {
-            return FileUtils::normalizeName("$gradlePath/bin/gradle" . ($this->isWindows() ? '.bat' : ''));
-        } else {
-            return 'gradle';
-        }
-
-        //throw new \Exception("Unable to find gradle bin");
-    }
-
     /**
      * Вернуть путь к папке tools IDE.
      *
@@ -486,17 +431,7 @@ class Ide extends Application
      */
     public function getJrePath()
     {
-        $path = $this->getToolPath();
-
-        if ($this->isWindows() || $this->isLinux()) {
-            $jrePath = new File($path, '/jre');
-
-            if ($this->isLinux() && (new File($path, '/jreLinux'))->isDirectory()) {
-                $jrePath = new File($path, '/jreLinux');
-            }
-        } else {
-            $jrePath = null;
-        }
+        $jrePath = Ide::getOwnFile("jre/");
 
         if (!$jrePath || !$jrePath->exists()) {
             $jrePath = System::getEnv()['JAVA_HOME'];
@@ -654,10 +589,9 @@ class Ide extends Application
     public static function getOwnFile($path)
     {
         $homePath = System::getProperty('Nearde.path', "./");
+        if (System::getEnv()['APP_HOME']) $homePath = System::getEnv()['APP_HOME'];
 
-        $home = $homePath;
-
-        return File::of("$home/$path");
+        return File::of("$homePath/$path");
     }
 
     /**
@@ -1572,7 +1506,9 @@ class Ide extends Application
         return $result;
     }
 
+
     /**
+     * @throws \php\lang\IllegalStateException
      * Restart IDE, запустить рестарт IDE, работает только в production режиме.
      */
     public function restart()
@@ -1582,6 +1518,8 @@ class Ide extends Application
         if (Ide::project()) {
             Ide::get()->setUserConfigValue('lastProject', Ide::project()->getProjectFile());
         }
+
+        Ide::toast("Restarting IDE ...");
 
         $this->shutdown();
     }
@@ -1632,5 +1570,19 @@ class Ide extends Application
     public function getThemeManager(): ThemeManager
     {
         return $this->themeManager;
+    }
+
+    /**
+     * Запустить новый экземпляр ide.
+     * @param array $args
+     * @throws \php\lang\IllegalStateException
+     */
+    public function startNew(array $args = [])
+    {
+        $jrePath = $this->getJrePath();
+        $args = flow([$jrePath ? "$jrePath/bin/java" : "java", '-jar', 'NeardeLauncher.jar'])->append($args)->toArray();
+
+        $process = new Process($args, Ide::getOwnFile(null), $this->makeEnvironment());
+        $process->start();
     }
 }

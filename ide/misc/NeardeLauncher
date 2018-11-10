@@ -9,16 +9,8 @@ realpath() {
 }
 
 APP_HOME=$(dirname "$(realpath "$0")")
-
-echo "App Home = $APP_HOME"
-
 JAVA_HOME="$APP_HOME/jre"
 JAVA_BIN="$JAVA_HOME/bin/java"
 
-
 cd "$APP_HOME"
-
-OUTPUT=$(exec "$JAVA_BIN" -jar "$APP_HOME/NeardeLauncher.jar")
-
-echo "---------------------"
-echo "Nearde IDE has been started."
+exec "$JAVA_BIN" -jar "$APP_HOME/NeardeLauncher.jar"

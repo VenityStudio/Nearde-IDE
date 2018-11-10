@@ -8,6 +8,7 @@ use ide\autocomplete\AutoCompleteInsert;
 use ide\autocomplete\AutoCompleteItem;
 use ide\autocomplete\AutoCompleteType;
 use ide\autocomplete\ConstantAutoCompleteItem;
+use ide\autocomplete\FunctionAutoCompleteItem;
 use ide\autocomplete\MethodAutoCompleteItem;
 use ide\autocomplete\php\PhpAnyAutoCompleteType;
 use ide\autocomplete\PropertyAutoCompleteItem;
@@ -26,6 +27,7 @@ use php\gui\paint\UXColor;
 use php\gui\text\UXFont;
 use php\gui\UXApplication;
 use php\gui\UXClipboard;
+use php\gui\UXGenericStyledArea;
 use php\gui\UXLabel;
 use php\gui\UXListCell;
 use php\gui\UXListView;
@@ -56,7 +58,7 @@ class AutoCompletePane
     protected $uiDescription = [];
 
     /**
-     * @var UXSyntaxTextArea
+     * @var UXGenericStyledArea
      */
     protected $area;
 
@@ -98,7 +100,7 @@ class AutoCompletePane
     protected $inserted = false;
 
     /**
-     * @param UXSyntaxTextArea|UXAbstractCodeArea $area
+     * @param UXGenericStyledArea $area
      * @param AutoComplete $complete
      */
     public function __construct($area, AutoComplete $complete)
@@ -187,11 +189,9 @@ class AutoCompletePane
 
     protected function tryShowHint(int $x = null, int $y = null): bool
     {
-        Logger::debug("Try show hint");
-
         if ($x === null && $y === null) {
-            $caretBounds = $this->area->caretBounds;
-            list($x, $y) = [$caretBounds['x'], $caretBounds['y']];
+            $caretBounds = $this->area->getCharacterBounds();
+            [$x, $y] = [$caretBounds['x'], $caretBounds['y']];
 
             $x += $caretBounds['width'];
             $y += $caretBounds['height'];
@@ -238,13 +238,9 @@ class AutoCompletePane
                     $hintShown = false;
                 }
             }
-        } else {
-            Logger::debug("Try show hint result is 'empty hint string'");
         }
 
-        if (!$hintShown) {
-            $this->hideDescription();
-        }
+        if (!$hintShown) $this->hideDescription();
 
         return $hintShown;
     }
@@ -257,10 +253,11 @@ class AutoCompletePane
             }
         });
 
+        /**
         $this->area->on('paste', function () {
             $text = $this->prepareInsertForMultiline(UXClipboard::getText());
             $this->pasteUsesFromCode($text);
-        });
+        });*/
 
         $this->area->on('mouseDown', function () {
             $this->hide();
@@ -331,17 +328,14 @@ class AutoCompletePane
                 case 'Down':
                     return;
             }
-
             if ($this->inserted) {
                 $this->inserted = false;
                 return;
             }
-
             if ($this->lock) {
                 $this->lock = false;
                 return;
             }
-
             switch ($e->codeName) {
                 case 'Left':
                 case 'Right':
@@ -349,44 +343,25 @@ class AutoCompletePane
                     return;
             }
 
-
-            if ($this->area instanceof UXSyntaxTextArea) {
-                list($x, $y) = $this->area->getCaretScreenPosition();
-                $x += 20;
-                $y += 20;
-            } else {
-                $caretBounds = $this->area->caretBounds;
-                list($x, $y) = [$caretBounds['x'], $caretBounds['y']];
-
-                $x += $caretBounds['width'];
-                $y += $caretBounds['height'];
-            }
+            $caretBounds = $this->area->getCharacterBounds();
+            [$x, $y] = [$caretBounds['x'], $caretBounds['y']];
+            $x += $caretBounds['width'];
+            $y += $caretBounds['height'];
 
             $hintShown = $this->tryShowHint($x, $y);
-
             if (!$hintShown) {
                 if ($string = $this->getString()) {
                     $items = null;
-
                     if ($string != $this->lastString) {
                         $region = $this->complete->findRegion($this->area->caretLine, $this->area->caretOffset);
                         $types = $this->complete->identifyType($string, $region);
-
                         if (arr::keys($this->types) != $types) {
                             $this->types = [];
-
-                            foreach ($types as $type) {
-                                //if (!$this->hasType($type)) {
-                                $this->addType($type);
-                                //}
-                            }
+                            foreach ($types as $type) $this->addType($type);
                         }
-
                         $items = $this->makeItems($this->getString(true));
                     }
-
                     $this->lastString = $string;
-
                     uiLater(function () use ($x, $y, $string, $items) {
                         if ($items !== null) {
                             $this->list->items->clear();
@@ -394,14 +369,10 @@ class AutoCompletePane
                             $this->list->selectedIndex = 0;
                             $this->list->focusedIndex = 0;
                             $this->list->scrollTo(0);
-
-                            //Logger::debug("Autocomplete list updated.");
                         }
-
                         if ($this->list->items->count) {
                             $this->show($x, $y);
                         } else {
-                            //Logger::debug("No auto complete items for: $string");
                             $this->hide();
                         }
                     });
@@ -539,8 +510,6 @@ class AutoCompletePane
 
     protected function doPick()
     {
-        //Logger::debug("do pick");
-
         if ($this->shown) {
             UXApplication::runLater(function () {
                 $this->hide();
@@ -595,22 +564,16 @@ class AutoCompletePane
 
 
                 $this->area->caretPosition -= str::length($prefix);
-                try {
-                    $this->area->deleteText($this->area->caretPosition, $this->area->caretPosition + str::length($prefix));
-                } catch (IllegalArgumentException $e) {
-                    ; // nop TODO fix bug (hotfix)
-                }
-
-                $this->area->insertToCaret($insert);
+                $this->area->replaceText($this->area->caretPosition, $this->area->caretPosition + str::length($prefix), $insert);
                 $this->area->caretPosition += $altCaret;
                 uiLater([$this, 'tryShowHint']);
             });
 
             $this->lock = true;
             return true;
-        } else {
-
         }
+
+        return false;
     }
 
     public function hasType($name)
@@ -638,6 +601,7 @@ class AutoCompletePane
         $hintMode = false;
 
         $endChar = $text[$i - 1];
+
         if (Char::isSpace($endChar) || Char::isPrintable($endChar) || str::contains('(,-+*/&|=%!~.<>"\'?^', $endChar)) {
             $hintMode = true;
         }
@@ -1003,7 +967,7 @@ class AutoCompletePane
     protected function makeItemUi(UXListCell $cell, AutoCompleteItem $item)
     {
         $label = new UXLabel($item->getName());
-        $label->textColor = UXColor::of('black');
+        $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("black"));
         $label->style = $item->getStyle();
 
         $icon = $this->getImageOfItem($item);
@@ -1012,7 +976,7 @@ class AutoCompletePane
             $cell->graphic = $icon ? new UXHBox([$icon, $label]) : $label;
         } else {
             $hintLabel = new UXLabel($item->getDescription() ? ": {$item->getDescription()}" : "");
-            $hintLabel->textColor = UXColor::of('gray');
+            $hintLabel->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("gray"));
 
             if ($icon) {
                 if (str::trim($item->getDescription())) {
@@ -1031,7 +995,7 @@ class AutoCompletePane
 
         if ($item instanceof VariableAutoCompleteItem) {
             $label->text = "\${$label->text}";
-            $label->textColor = UXColor::of('blue');
+            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("blue"));
         }
 
         if ($item instanceof MethodAutoCompleteItem) {
@@ -1041,12 +1005,12 @@ class AutoCompletePane
                 $label->text = "{$label->text}()";
             }
 
-            $label->textColor = UXColor::of('black');
+            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("black"));
         }
 
         if ($item instanceof PropertyAutoCompleteItem) {
             $label->text = "{$label->text}";
-            $label->textColor = UXColor::of('green');
+            $label->textColor = UXColor::of(Ide::get()->getThemeManager()->getDefault()->colorAlias("green"));
         }
     }
 }

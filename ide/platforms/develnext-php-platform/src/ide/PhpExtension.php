@@ -1,6 +1,7 @@
 <?php
 namespace ide;
 
+use ide\formats\PhpCodeFormat;
 use ide\project\supports\jppm\JPPMAppPluginSupport;
 use ide\project\supports\JPPMProjectSupport;
 use ide\project\supports\PHPProjectSupport;
@@ -20,6 +21,8 @@ class PhpExtension extends AbstractExtension
         Ide::get()->registerProjectSupport(PHPProjectSupport::class);
         Ide::get()->registerProjectSupport(JPPMProjectSupport::class);
         Ide::get()->registerProjectSupport(JPPMAppPluginSupport::class);
+
+        Ide::get()->registerFormat(new PhpCodeFormat());
     }
 
     public function onIdeStart()

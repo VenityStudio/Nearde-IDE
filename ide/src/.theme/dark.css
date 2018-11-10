@@ -357,8 +357,8 @@ combo-box-base:editable:focused > .text-field,
     -fx-text-fill: white;
 }
 
-.list-cell:odd { -fx-background-color: #33333360;}
-.list-cell:even { -fx-background-color: #33333360;}
+.list-cell:odd { -fx-background-color: #82adf260;}
+.list-cell:even { -fx-background-color: #82adf260;}
 
 .flow-list-view {
     -fx-background-color: #333333;

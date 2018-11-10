@@ -9,6 +9,6 @@ class PropertyAutoCompleteItem extends AutoCompleteItem
 {
     public function getDefaultIcon()
     {
-        return 'icons/greenSquare16.png';
+        return 'icons/field16.png';
     }
 }

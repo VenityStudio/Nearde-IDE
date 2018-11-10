@@ -20,6 +20,7 @@ use ide\project\behaviours\BundleProjectBehaviour;
 use ide\project\behaviours\PhpProjectBehaviour;
 use ide\project\Project;
 use php\gui\designer\UXAbstractCodeArea;
+use php\gui\UXGenericStyledArea;
 use php\lib\arr;
 use php\lib\fs;
 use php\lib\str;
@@ -49,7 +50,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
         $this->kind = $kind;
     }
 
-    public static function appendUseClass(UXAbstractCodeArea $area, $use)
+    public static function appendUseClass(UXGenericStyledArea $area, $use)
     {
         $useString = "use " . $use . ";";
 

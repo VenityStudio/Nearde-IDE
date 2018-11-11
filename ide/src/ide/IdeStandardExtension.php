@@ -36,6 +36,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerCommand(new RunTaskCommand());
         Ide::get()->registerCommand(new IdeLogShowCommand());
         Ide::get()->registerCommand(new SettingsCommand());
+        Ide::get()->registerCommand(new AboutCommand());
 
         // formats
         Ide::get()->registerFormat(new WelcomeFormat());

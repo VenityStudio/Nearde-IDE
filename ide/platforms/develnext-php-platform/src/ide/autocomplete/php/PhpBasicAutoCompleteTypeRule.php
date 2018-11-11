@@ -58,11 +58,9 @@ class PhpBasicAutoCompleteTypeRule extends AutoCompleteTypeRule
         return null;
     }
 
-    protected function findReturnType(SimpleToken $token, $previousType = null, AutoCompleteRegion $region)
+    protected function findReturnType(SimpleToken $token, $returnType = null, AutoCompleteRegion $region)
     {
         $inspector = $this->complete->getInspector();
-
-        $returnType = $previousType;
 
         if (!is_array($returnType)) {
             $returnType = [$returnType];

@@ -80,20 +80,8 @@ class PHPProjectSupport extends AbstractProjectSupport
 
             (new Thread(function () use ($project) {
                 $package = $this->getProjectPackage($project);
-
                 $this->inspector->putPackage($project->getPackageName(), $package);
-
-                $options = [
-                    'defaultPackages' => [$project->getPackageName()]
-                ];
-
-                if ($project->getSrcDirectory() != null) {
-                    $project->loadDirectoryForInspector($project->getSrcFile(""), $options);
-                }
-
-                if ($project->getSrcGeneratedDirectory() != null) {
-                    $project->loadDirectoryForInspector($project->getSrcFile("", true), $options);
-                }
+                $this->inspector->loadDirectory($project->getRootDir());
             }))->start();
         }
     }

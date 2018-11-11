@@ -123,7 +123,7 @@ class TypeAccessAutoCompleteType extends AutoCompleteType
                 $description = "$description (def: $prop->value)";
             }
 
-            $icon = $prop->data['icon'] ?: 'icons/greenSquare16.png';
+            $icon = $prop->data['icon'] ?: 'icons/field16.png';
 
             if ($prop->modifier != 'PUBLIC') {
                 if ($type->data['public'] || !str::equalsIgnoreCase($currentClass, $context)) {
@@ -171,7 +171,7 @@ class TypeAccessAutoCompleteType extends AutoCompleteType
                         $name,
                         $method->data['returnType'],
                         null,
-                        'icons/greenSquare16.png'
+                        'icons/field16.png'
                     );
 
                     $p->setContent($method->data['content']);

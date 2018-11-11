@@ -142,7 +142,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
             $result['__LINE__'] = new ConstantAutoCompleteItem('__LINE__');
 
             foreach ($this->inspector->getConstants() as $constant) {
-                $result[$constant->name] = new ConstantAutoCompleteItem($constant->name, "$constant->value");
+                $result[$constant->name] = new ConstantAutoCompleteItem($constant->name, $constant->value);
             }
 
             foreach ($this->inspector->getTypes() as $type) {
@@ -151,7 +151,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
                 }
 
                 $import = $type->fulledName;
-                $name = fs::name($import);
+                $name = $type->name;
 
                 $description = $import;
 
@@ -160,8 +160,10 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
                 if ($type->kind == 'INTERFACE') {
                     $description = " (interface) $description";
                 } elseif ($type->kind == 'TRAIT') {
+                    $icon = "icons/trait16.png";
                     $description = " (trait) $description";
                 } elseif ($type->abstract) {
+                    $icon = "icons/abstractClass.png";
                     $description = "(abstract) $description";
                 }
 
@@ -173,14 +175,12 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
 
                 $result[$name] = $c = new ConstantAutoCompleteItem(array_pop($arrName), $description,
                     function (AutoCompleteInsert $insert) use ($import, $type) {
-                        $insertArr = explode("\\", $import);
-
-                        $insert->setValue(array_pop($insertArr));
+                        $insert->setValue($type->name);
 
                         $package = null;
 
                         $this->insertClassName($insert, $import);
-                    }, 'icons/class16.png', $style
+                    }, $icon ? $icon : 'icons/class16.png', $style
                 );
 
                 $c->setContent($type->data['content']);
@@ -191,7 +191,7 @@ class PhpAnyAutoCompleteType extends AutoCompleteType
 
                 if ($constructor) {
                     $item = PhpCompleteUtils::methodAutoComplete2($constructor, false);
-                    $item->setName('constructor');
+                    $item->setName('__construct');
                     $c->addSubItem($item);
                 }
             }

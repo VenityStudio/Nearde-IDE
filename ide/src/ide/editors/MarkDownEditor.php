@@ -34,7 +34,7 @@ class MarkDownEditor extends AbstractEditor
         $this->editor = new CodeArea();
         $this->browser = new UXWebView();
 
-        $this->editor->addStylesheet(CodeEditor::getHighlightFile("php", "PhpStorm"));
+        $this->editor->addStylesheet(CodeEditor::getCurrentHighlight(null));
         $this->editor->setHighlighter(MarkDownHighlighter::class);
         $this->editor->getHighlighter()->on("applyHighlight", [$this, "render"]);
         $this->editor->getRichArea()->appendText(Stream::getContents($this->file));

@@ -143,7 +143,7 @@ abstract class PhpCompleteUtils
 
         $description = self::methodParamsString2($method);
 
-        $item = new MethodAutoCompleteItem($method->name, $description, $insert, null, $bold ? ';' : '-fx-text-fill: #4c4c4c;');
+        $item = new MethodAutoCompleteItem($method->name, $description, $insert);
         $item->setContent($method->data['content']);
 
         return $item;

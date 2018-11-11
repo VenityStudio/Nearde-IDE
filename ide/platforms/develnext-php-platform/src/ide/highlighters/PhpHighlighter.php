@@ -13,20 +13,19 @@ class PhpHighlighter extends AbstractHighlighter
         "STRING"    => "string",
         "STRINGALT" => "string",
         "COMMENT"   => "comment",
-        "COMMENTALT"   => "comment",
         "VAR"       => "variable",
         "NUM"       => "number",
         "KEYWORD"       => "keyword",
     ];
 
     private $keyWords = [
-        "<\\?", "<\\?php", "\\?>", '__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch',
+        '__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch',
         'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty',
         'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final',
         'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof',
         'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public',
         'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var', 'while',
-        'xor'
+        'xor', 'self', 'fn'
     ];
 
     /**
@@ -39,8 +38,7 @@ class PhpHighlighter extends AbstractHighlighter
         $regex = Regex::of(str::join([
             "(?<STRING>\"(.)+\")",
             "|(?<STRINGALT>\'(.)+\')",
-            "|(?<COMMENT>//(.)+$)",
-            "|(?<COMMENTALT>/\\*(.)+\\*/)",
+            "|(?<COMMENT>//[^\\n]*|/\\*(.|\\R)*?\\*/)",
             "|(?<KEYWORD>\\b(". str::join($this->keyWords, "|") .")\\b)",
             "|(?<VAR>\\$[a-zA-Z_$][a-zA-Z_$0-9]*)",
             "|(?<NUM>([0-9])+)",
@@ -50,11 +48,10 @@ class PhpHighlighter extends AbstractHighlighter
         {
             $regex->group("STRING") != null ? $group = "STRING" :
                 $regex->group("STRINGALT") != null ? $group = "STRINGALT" :
-                    $regex->group("COMMENTALT") != null ? $group = "COMMENTALT" :
                         $regex->group("KEYWORD") != null ? $group = "KEYWORD" :
                             $regex->group("NUM") != null ? $group = "NUM" :
-                                $regex->group("VAR") != null ? $group = "VAR" :
-                                    $regex->group("COMMENT") != null ? $group = "COMMENT" : null;
+                                    $regex->group("COMMENT") != null ? $group = "COMMENT" :
+                                        $regex->group("VAR") != null ? $group = "VAR" : null;
 
             $this->codeArea->getRichArea()->setStyleClass($regex->start($group), $regex->end($group), $this->classes[$group]);
         }

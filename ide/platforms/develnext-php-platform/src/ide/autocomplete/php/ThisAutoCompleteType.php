@@ -40,7 +40,7 @@ class ThisAutoCompleteType extends AutoCompleteType
 
         if ($class && $class['constants']) {
             foreach ($class['constants'] as $one) {
-                $result[] = new ConstantAutoCompleteItem($one['name'], 'Константа класса ' . $class['name']);
+                $result[] = new ConstantAutoCompleteItem($one['name'], 'Constant' . $class['name']);
             }
         }
 

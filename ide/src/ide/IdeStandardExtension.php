@@ -11,6 +11,7 @@ use ide\commands\RunTaskCommand;
 use ide\commands\SaveProjectCommand;
 use ide\commands\SaveProjectForLibraryCommand;
 use ide\commands\SettingsCommand;
+use ide\commands\AboutCommand;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
 use ide\formats\MarkDownFormat;

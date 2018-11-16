@@ -1,5 +1,5 @@
 name: Nearde IDE
-version: 0.0.1+dev
+version: 0.1.0
 
 requires:
   java: {version: '>=9.0.0', arch: amd64}

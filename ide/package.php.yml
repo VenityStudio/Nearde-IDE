@@ -1,5 +1,5 @@
 name: nearde-ide
-version: 0.0.1+dev
+version: 0.1.0
 type: project
 description: DN Fork
 
@@ -9,7 +9,6 @@ sources:
   - src
   - platforms/develnext-java-platform/src
   - platforms/develnext-php-platform/src
-  - platforms/nearde-android-platform/src
 
 includes:
 - index.php

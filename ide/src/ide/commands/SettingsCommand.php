@@ -3,13 +3,13 @@
 namespace ide\commands;
 
 use ide\editors\AbstractEditor;
+use ide\forms\IdeSettingsForm;
 use ide\Ide;
 use ide\misc\AbstractCommand;
 use ide\themes\DarkTheme;
 
 class SettingsCommand extends AbstractCommand
 {
-
     public function getName()
     {
         return "common.settings";
@@ -27,9 +27,8 @@ class SettingsCommand extends AbstractCommand
 
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
-        //Ide::get()->setUserConfigValue("ide.theme", (new DarkTheme())->getName());
-        //Ide::get()->restart();
-        Ide::toast("Soon ...");
+        $form = new IdeSettingsForm();
+        $form->showAndWait();
     }
 
     public function isAlways()

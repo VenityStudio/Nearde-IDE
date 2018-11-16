@@ -16,6 +16,8 @@ use ide\project\AbstractProjectSupport;
 use ide\project\AbstractProjectTemplate;
 use ide\project\control\AbstractProjectControlPane;
 use ide\project\Project;
+use ide\settings\IdeSettings;
+use ide\settings\SettingsContainer;
 use ide\systems\Cache;
 use ide\systems\FileSystem;
 use ide\systems\IdeSystem;
@@ -157,7 +159,10 @@ class Ide extends Application
      */
     private $themeManager;
 
-
+    /**
+     * @var SettingsContainer
+     */
+    private $settingsContainer;
 
     public function __construct($configPath = null)
     {
@@ -175,6 +180,9 @@ class Ide extends Application
         $this->themeManager->register($l = new LightTheme());
         $this->themeManager->register(new DarkTheme());
         $this->themeManager->setDefault($this->getUserConfigValue("ide.theme", $l->getName()));
+
+        $this->settingsContainer = new SettingsContainer();
+        $this->settingsContainer->register(new IdeSettings());
 
         $this->asyncThreadPool = ThreadPool::createCached();
     }
@@ -1584,5 +1592,13 @@ class Ide extends Application
 
         $process = new Process($args, Ide::getOwnFile(null), $this->makeEnvironment());
         $process->start();
+    }
+
+    /**
+     * @return SettingsContainer
+     */
+    public function getSettingsContainer(): SettingsContainer
+    {
+        return $this->settingsContainer;
     }
 }

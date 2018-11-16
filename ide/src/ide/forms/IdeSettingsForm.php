@@ -36,6 +36,15 @@ class IdeSettingsForm extends AbstractIdeForm
         parent::__construct();
 
         $this->title = _("common.settings");
+
+        // l10n for buttons
+        _($this->save_btn);
+        _($this->def_btn);
+        _($this->close_btn);
+    }
+
+    public function updateUI() {
+        $this->setting_tabs->tabs->clear();
         $this->settings = Ide::get()->getSettingsContainer()->getAll();
 
         foreach ($this->settings as $setting) {
@@ -47,11 +56,12 @@ class IdeSettingsForm extends AbstractIdeForm
 
             $this->setting_tabs->tabs->add($tab);
         }
+    }
 
-        // l10n for buttons
-        _($this->save_btn);
-        _($this->def_btn);
-        _($this->close_btn);
+    public function showAndWait()
+    {
+        $this->updateUI();
+        parent::showAndWait();
     }
 
     /**

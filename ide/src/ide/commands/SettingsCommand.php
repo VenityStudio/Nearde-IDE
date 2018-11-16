@@ -3,6 +3,7 @@
 namespace ide\commands;
 
 use ide\editors\AbstractEditor;
+use ide\forms\AbstractIdeForm;
 use ide\forms\IdeSettingsForm;
 use ide\Ide;
 use ide\misc\AbstractCommand;
@@ -10,6 +11,19 @@ use ide\themes\DarkTheme;
 
 class SettingsCommand extends AbstractCommand
 {
+    /**
+     * @var AbstractIdeForm
+     */
+    private $form;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->form = new IdeSettingsForm();
+    }
+
     public function getName()
     {
         return "common.settings";
@@ -27,8 +41,9 @@ class SettingsCommand extends AbstractCommand
 
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
-        $form = new IdeSettingsForm();
-        $form->showAndWait();
+        if (!$this->form->visible)
+            $this->form->showAndWait();
+        else $this->form->toFront();
     }
 
     public function isAlways()

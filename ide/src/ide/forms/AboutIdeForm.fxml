@@ -1,29 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="360.0" maxWidth="272.0" minHeight="360.0" minWidth="272.0" prefHeight="360.0" prefWidth="272.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="306.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox id="vbox" alignment="TOP_CENTER" focusTraversable="false" maxHeight="360.0" maxWidth="272.0" minHeight="360.0" minWidth="272.0" prefHeight="360.0" prefWidth="272" spacing="5" styleClass="">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="272.0" pickOnBounds="true" preserveRatio="true">
+      <BorderPane prefHeight="400.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <ImageView id="logo" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                <image>
-                  <Image url=".data/img/logo.png" />
+                  <Image url="/.data/img/logo.png" />
                </image>
             </ImageView>
-            <Label text="Nearde IDE">
-               <font>
-                  <Font size="30.0" />
-               </font>
-            </Label>
-            <Label id="info" text="ADDINFO" />
-         </children>
-      </VBox>
+         </top>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+         <bottom>
+            <HBox id="link_box" alignment="CENTER" prefHeight="28.0" prefWidth="290.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Hyperlink id="gitlink" text="GitHub" />
+               </children>
+            </HBox>
+         </bottom>
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label id="ide_name" alignment="CENTER" prefHeight="52.0" prefWidth="290.0" text="IDE Name &amp; Version" textAlignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label id="about" alignment="TOP_CENTER" prefHeight="189.0" prefWidth="290.0" text="about IDE" textAlignment="CENTER" />
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>

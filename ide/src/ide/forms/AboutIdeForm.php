@@ -1,25 +1,33 @@
 <?php
 namespace ide\forms;
 
-use ide\forms\mixins\DialogFormMixin;
-use ide\forms\mixins\SavableFormMixin;
 use ide\Ide;
-use ide\themes\DarkTheme;
+use php\gui\layout\UXHBox;
+use php\gui\UXHyperlink;
+use php\gui\UXImageView;
+use php\gui\UXLabel;
 
+/**
+ * Class AboutIdeForm
+ * @package ide\forms
+ *
+ * @property UXImageView logo
+ * @property UXLabel ide_name
+ * @property UXLabel about
+ * @property UXHBox link_box
+ * @property UXHyperlink gitlink
+ */
 class AboutIdeForm extends AbstractIdeForm
 {
-	public function init()
-    {
-    	$this->modality = 'APPLICATION_MODAL';
-    }
-
-	/**
+    /**
      * @event show 
      */
-    function doShow()
+    public function doShow()
     {    
-        $this->title = "Nearde IDE";
-        $this->info->text = "0.1 (SNAPSHOT)\nVenity & jPHP group\n\nContibutors:\n- dim-s\n- MWGuy\n- gbowsky";
+        $this->ide_name->text = Ide::get()->getName() . " " . Ide::get()->getVersion();
+        $this->about->text = "Venity & jPHP group\n\nContibutors:\ndim-s\nMWGuy\ngbowsky";
+
+        $this->gitlink->on("click", fn() => browse("https://github.com/VenityStudio/Nearde-IDE"));
     }
 
 }

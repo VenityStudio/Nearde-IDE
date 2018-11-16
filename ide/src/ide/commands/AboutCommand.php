@@ -26,11 +26,6 @@ class AboutCommand extends AbstractCommand
         return "help";
     }
 
-    public function getAccelerator()
-    {
-        return 'F1';
-    }
-
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
         $about = new AboutIdeForm();

@@ -799,7 +799,6 @@ class AutoCompletePane
         $list->maxHeight = 9999;
         $list->fixedCellSize = 20;
         $list->classes->addAll(['hide-hor-scroll', 'dn-console-list', 'dn-autocomplete']);
-        $list->style = '-fx-background-insets: 0; -fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background;';
         $list->width = 400;
 
         $ui->add($list);
@@ -820,8 +819,6 @@ class AutoCompletePane
 
         $win = new UXPopupWindow();
         $win->layout = $ui;
-        /*$win->style = 'TRANSPARENT';
-        $win->opacity = 0.7;*/
 
         $v = function () {
             $offsetY = 0;

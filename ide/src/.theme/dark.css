@@ -367,3 +367,7 @@ combo-box-base:editable:focused > .text-field,
 .dn-console-list {
     -fx-border-width: 0;
 }
+
+.dn-autocomplete {
+    -fx-text-fill: #fff;
+}

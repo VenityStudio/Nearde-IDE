@@ -4,6 +4,8 @@ namespace ide\forms;
 
 use ide\Ide;
 use ide\settings\AbstractSettings;
+use ide\systems\DialogSystem;
+use php\gui\UXAlert;
 use php\gui\UXButton;
 use php\gui\UXTab;
 use php\gui\UXTabPane;

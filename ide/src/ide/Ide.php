@@ -16,6 +16,7 @@ use ide\project\AbstractProjectSupport;
 use ide\project\AbstractProjectTemplate;
 use ide\project\control\AbstractProjectControlPane;
 use ide\project\Project;
+use ide\settings\ExtensionsSettings;
 use ide\settings\IdeSettings;
 use ide\settings\SettingsContainer;
 use ide\systems\Cache;
@@ -183,6 +184,7 @@ class Ide extends Application
 
         $this->settingsContainer = new SettingsContainer();
         $this->settingsContainer->register(new IdeSettings());
+        $this->settingsContainer->register(new ExtensionsSettings());
 
         $this->asyncThreadPool = ThreadPool::createCached();
     }
@@ -1600,5 +1602,13 @@ class Ide extends Application
     public function getSettingsContainer(): SettingsContainer
     {
         return $this->settingsContainer;
+    }
+
+    /**
+     * @return AbstractExtension[]
+     */
+    public function getExtensions(): array
+    {
+        return $this->extensions;
     }
 }

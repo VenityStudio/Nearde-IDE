@@ -149,9 +149,8 @@
     -fx-line-spacing: 30px;
 }
 
-.dn-autocomplete {
-    -fx-border-width: 0px;
-    -fx-border-color: #dddddd;
+.dn-autocomplete .list-cell:selected {
+    -fx-background-color: #82adf220;
 }
 
 .dn-autocomplete-description {
@@ -406,5 +405,3 @@ combo-box-base:editable:focused > .text-field,
 .styled-text-area {
     -fx-font-size: 14;
 }
-
-.list-cell:selected { -fx-background-color: #82adf220;}

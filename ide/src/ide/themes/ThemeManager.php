@@ -46,4 +46,11 @@ class ThemeManager
     {
         return $this->get($this->default);
     }
+
+    /**
+     * @return AbstractTheme[]
+     */
+    public function getAll() : array {
+        return $this->themes;
+    }
 }

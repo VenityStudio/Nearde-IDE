@@ -18,7 +18,7 @@ use php\io\Stream;
 class MarkDownEditor extends AbstractEditor
 {
     /**
-     * @var CodeArea
+     * @var TextEditor
      */
     private $editor;
 
@@ -27,18 +27,22 @@ class MarkDownEditor extends AbstractEditor
      */
     private $browser;
 
+    /**
+     * MarkDownEditor constructor.
+     * @param string $file
+     * @throws \php\io\IOException
+     */
     public function __construct(string $file)
     {
         parent::__construct($file);
 
-        $this->editor = new CodeArea();
+        $this->editor = new TextEditor($file);
         $this->browser = new UXWebView();
 
-        $this->editor->addStylesheet(CodeEditor::getCurrentHighlight(null));
-        $this->editor->setHighlighter(MarkDownHighlighter::class);
-        $this->editor->getHighlighter()->on("applyHighlight", [$this, "render"]);
-        $this->editor->getRichArea()->appendText(Stream::getContents($this->file));
-        $this->editor->getHighlighter()->applyHighlight();
+        $this->editor->getEditor()->setHighlighter(MarkDownHighlighter::class);
+        $this->editor->getEditor()->getHighlighter()->on("applyHighlight", [$this, "render"]);
+        $this->editor->getEditor()->getRichArea()->appendText(Stream::getContents($this->file));
+        $this->editor->getEditor()->getHighlighter()->applyHighlight();
     }
 
     public function getIcon()

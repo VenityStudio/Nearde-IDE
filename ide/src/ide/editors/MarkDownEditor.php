@@ -38,11 +38,6 @@ class MarkDownEditor extends AbstractEditor
 
         $this->editor = new TextEditor($file);
         $this->browser = new UXWebView();
-
-        $this->editor->getEditor()->setHighlighter(MarkDownHighlighter::class);
-        $this->editor->getEditor()->getHighlighter()->on("applyHighlight", [$this, "render"]);
-        $this->editor->getEditor()->getRichArea()->appendText(Stream::getContents($this->file));
-        $this->editor->getEditor()->getHighlighter()->applyHighlight();
     }
 
     public function getIcon()
@@ -52,12 +47,13 @@ class MarkDownEditor extends AbstractEditor
 
     public function load()
     {
+        $this->editor->load();
         $this->render();
     }
 
     public function save()
     {
-        Stream::putContents($this->file, $this->editor->getRichArea()->text);
+        $this->editor->save();
     }
 
     /**
@@ -70,11 +66,11 @@ class MarkDownEditor extends AbstractEditor
         $tabpane->tabs->add($editor = new UXTab());
         $tabpane->tabs->add($view = new UXTab());
 
-        $editor->text = "Редактор";
+        $editor->text = _("ide.editor.markdown.editor");
         $editor->graphic = Ide::getImage("icons/idea16.png");
-        $editor->content = $this->editor;
+        $editor->content = $this->editor->getEditor();
 
-        $view->text = "Просмотор";
+        $view->text = _("ide.editor.markdown.view");
         $view->graphic = Ide::getImage("icons/webBrowser16.png");
         $view->content = $this->browser;
 
@@ -88,7 +84,7 @@ class MarkDownEditor extends AbstractEditor
         $content  = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
         $content .= "<style>". Stream::getContents("res://.data/vendor/markdown.css") ."</style>";
         $content .= "<article class=\"markdown-body\">";
-        $content .= $md->render($this->editor->getRichArea()->text);
+        $content .= $md->render($this->editor->getEditor()->getRichArea()->text);
         $content .= "</article>";
         $this->browser->engine->loadContent($content);
     }

@@ -3,6 +3,7 @@
 namespace ide\editors;
 
 use ide\editors\highlighters\JsonHighlighter;
+use ide\editors\highlighters\MarkDownHighlighter;
 use ide\editors\support\CodeArea;
 use ide\Ide;
 use php\gui\UXNode;
@@ -31,6 +32,10 @@ class TextEditor extends AbstractEditor
         switch (fs::ext($file)) {
             case "json":
                 $this->editor->setHighlighter(JsonHighlighter::class);
+                break;
+            case "md":
+            case "MD":
+                $this->editor->setHighlighter(MarkDownHighlighter::class);
                 break;
         }
     }

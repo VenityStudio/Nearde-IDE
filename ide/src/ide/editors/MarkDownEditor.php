@@ -9,6 +9,7 @@ use ide\editors\support\Gutter;
 use ide\Ide;
 use ide\utils\FileUtils;
 use markdown\Markdown;
+use php\gui\UXApplication;
 use php\gui\UXNode;
 use php\gui\UXTab;
 use php\gui\UXTabPane;
@@ -38,6 +39,7 @@ class MarkDownEditor extends AbstractEditor
 
         $this->editor = new TextEditor($file);
         $this->browser = new UXWebView();
+        $this->editor->getEditor()->getHighlighter()->on("applyHighlight", [$this, "render"]);
     }
 
     public function getIcon()
@@ -80,12 +82,16 @@ class MarkDownEditor extends AbstractEditor
     }
 
     public function render() {
-        $md = new Markdown();
-        $content  = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
-        $content .= "<style>". Stream::getContents("res://.data/vendor/markdown.css") ."</style>";
-        $content .= "<article class=\"markdown-body\">";
-        $content .= $md->render($this->editor->getEditor()->getRichArea()->text);
-        $content .= "</article>";
-        $this->browser->engine->loadContent($content);
+        Ide::async(function () {
+            $md = new Markdown();
+            $content  = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
+            $content .= "<style>". Stream::getContents("res://.data/vendor/markdown.css") ."</style>";
+            $content .= "<article class=\"markdown-body\">";
+            $content .= $md->render($this->editor->getEditor()->getRichArea()->text);
+            $content .= "</article>";
+            UXApplication::runLaterAndWait(function () use ($content) {
+                $this->browser->engine->loadContent($content);
+            });
+        });
     }
 }

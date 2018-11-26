@@ -26,8 +26,15 @@ class CodeArea extends UXVirtualizedScrollPane
     public function __construct()
     {
         parent::__construct($this->richArea = new UXStyleClassedTextArea());
-        $this->richArea->graphicFactory($this->lineNumber = new LineNumber());
+
+        $this->richArea->setGraphicFactory($this->lineNumber = new LineNumber());
+
         $this->richArea->classes->add("syntax-text-area");
+    }
+
+    public function refreshLineNumber() : void {
+        $this->richArea->clearGraphicFactory();
+        $this->richArea->setGraphicFactory($this->lineNumber);
     }
 
     /**

@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:400,400i,500,700&subset=cyrillic');
 
 * {
-    -fx-font-family: 'Roboto';
+    -fx-font-family: 'Ubuntu';
 }
 
 .syntax-text-area {
@@ -36,7 +36,7 @@
 
 .syntax-text-area .text.keyword {
     -fx-fill: #000080;
-    -fx-font-weight: bold;
+    -fx-font-weight: medium;
 }
 
 .syntax-text-area .text.string {

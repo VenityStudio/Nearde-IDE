@@ -35,7 +35,7 @@ class DarkTheme extends AbstractTheme
 
     public function getCodeEditorCssFile(): string
     {
-        return CodeEditor::getHighlight("PhpStorm-Dracula")->getAbsolutePath();
+        return CodeEditor::getHighlight("dracula")->getAbsolutePath();
     }
 
     public function colorAlias(string $color): string

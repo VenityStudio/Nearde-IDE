@@ -5,6 +5,7 @@ namespace ide\themes;
 
 use ide\editors\CodeEditor;
 use ide\utils\FileUtils;
+use php\io\File;
 
 class LightTheme extends AbstractTheme
 {
@@ -29,6 +30,6 @@ class LightTheme extends AbstractTheme
 
     public function getCodeEditorCssFile(): string
     {
-        return CodeEditor::getHighlight("PhpStorm")->getAbsolutePath();
+        return CodeEditor::getHighlight("light")->getAbsolutePath();
     }
 }

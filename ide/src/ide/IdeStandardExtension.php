@@ -59,7 +59,7 @@ class IdeStandardExtension extends AbstractExtension
 
     public function getName(): string
     {
-        return "IDE Platform";
+        return Ide::get()->getName() . " Platform";
     }
 
     public function getAuthor(): string
@@ -74,7 +74,7 @@ class IdeStandardExtension extends AbstractExtension
 
     public function getIcon32(): string
     {
-        return "logo.png";
+        return Ide::get()->getIcon();
     }
 
     public function isSystem(): bool

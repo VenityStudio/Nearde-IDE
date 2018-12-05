@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
-
 .root {
 
     -fx-base: rgb(50, 50, 50);
@@ -7,11 +5,6 @@
 
     /* make controls (buttons, thumb, etc.) slightly lighter */
     -fx-color: derive(-fx-base, 10%);
-
-    /* text fields and table rows background */
-    -fx-control-inner-background: rgb(50, 50, 50);
-    /* version of -fx-control-inner-background for alternative rows */
-    -fx-control-inner-background-alt: derive(-fx-control-inner-background, 2.5%);
 
     /* text colors depending on background's brightness */
     -fx-light-text-color: rgb(220, 220, 220);
@@ -29,17 +22,15 @@
     -fx-smoothing-type: gray; 
     -fx-focus-color: #b3b3b3;
     -fx-faint-focus-color: #b3b3b301;
-    -fx-control-inner-background: derive(-fx-base, 7%);
-    -fx-control-inner-background-alt: derive(-fx-base, 15%);
-    -fx-color: -fx-base;
-    
-    // Цвет border у табличных элементов
+    -fx-control-inner-background: -fx-base;
+    -fx-control-inner-background-alt: -fx-base;
+
     -fx-box-border: ladder(
         -fx-color,
         black 5%,
         derive(-fx-color,-7%) 30%
     );
-    // Цвет border у текстовых элементов
+
     -fx-text-box-border: ladder(
         -fx-color,
         black 5%,
@@ -58,10 +49,6 @@
     -fx-faint-focus-color: transparent;
 }
 
-* {
-    -fx-font-family: 'Roboto';
-}
-
 .bg-white {
     -fx-background-color: #fff;
 }
@@ -70,34 +57,6 @@
 }
 .bg-dark {
     -fx-background-color: #444;
-}
-
-.font-light {
-    -fx-font-family: "Source Sans Pro Light";
-}
-.font-regular {
-    -fx-font-family: "Source Sans Pro Regular";
-}
-.font-bold {
-    -fx-font-family: "Source Sans Pro SemiBold";
-}
-
-.font-accent {
-    -fx-text-fill: -fx-accent;
-}
-.font-warning {
-    -fx-text-fill: -fx-warning;
-}
-.font-green {
-    -fx-text-fill: -fx-green;
-}
-.font-gray {
-    -fx-text-fill: #999999;
-}
-
-.font-h3 {
-    -fx-font-size: 1.5em;
-    -fx-font-family: "Source Sans Pro Light";
 }
 
 .bars {
@@ -119,18 +78,23 @@
     -fx-table-header-border-color: derive(-fx-base, -5%);
     -fx-table-cell-border-color: derive(-fx-base, -5%);
 }
-.table-view .column-header,
-.tree-table-view .column-header,
-.table-view .filler,
-.tree-table-view .filler,
-.table-view > .column-header-background > .show-hide-columns-button,
-.tree-table-view > .column-header-background > .show-hide-columns-button,
-.table-view:constrained-resize .filler,
-.tree-table-view:constrained-resize .filler {
-    -fx-font-family: "Source Sans Pro SemiBold";
+
+.split-menu-button > .arrow-button,
+.split-menu-button > .label {
+    -fx-background-color: derive(-fx-base, -5%);
+
 }
 
+.button, .combo-box-base, .split-menu-button {
+    -fx-background-color: derive(-fx-base, -5%);
+    -fx-border-color: derive(-fx-base, -50%);
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+}
 
+.button:hover, .combo-box-base:hover, .split-menu-button:hover {
+    -fx-background-color: derive(-fx-base, 15%);
+}
 
 .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
     -fx-text-fill: #fff;
@@ -138,8 +102,8 @@
 .tab-pane > .tab-header-area > .tab-header-background {
     -fx-background-color: #2d2d2d;
 }
-.tab-pane:top > .tab-header-area {
-    -fx-padding: 0.616667em 5 0.0em 0.616667em; /* 5 2 0 5 */
+.tab-pane > .tab-header-area {
+    -fx-padding: 0;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
@@ -152,23 +116,23 @@
 
 .accent-btn {
     -fx-background-color: #088acc;
+    -fx-border-color: derive(#088acc, -50%);
     -fx-text-fill: #fff;
-    -fx-font-family: "Roboto";
 }
+
+.accent-btn:hover {
+    -fx-background-color: #1575cc;
+}
+
 .warning-btn {
     -fx-background-color: #d6312b;
+    -fx-border-color: derive(#d6312b, -50%);
     -fx-text-fill: #fff;
-    -fx-font-family: "Roboto";
 }
 .green-btn {
     -fx-background-color: #55bd63;
+    -fx-border-color: derive(#55bd63, -50%);
     -fx-text-fill: #fff;
-    -fx-font-family: "Roboto";
-}
-
-.stop-btn {
-    -fx-background-color: transparent;
-    -fx-border-radius: 0;
 }
 
 .text-input {
@@ -187,14 +151,6 @@
 .text-area:focused > .scroll-pane {
     -fx-focus-color: null;
     -fx-background-color: null;
-}
-
-
-combo-box-base:editable:focused > .text-field,
-.combo-box-base:editable > .text-field:focused,
-.date-picker:focused > .text-field,
-.date-picker > .text-field:focused {
-    -fx-background-insets: 1 0 1 1, 1 0 1 1, 1 1 1 1;
 }
 
 /*******************************************************************************
@@ -340,6 +296,7 @@ combo-box-base:editable:focused > .text-field,
 
 .menu-bar {
     -fx-background-color: #2d2d2d;
+    -fx-padding: 3;
 }
 
 .split-pane *.split-pane-divider {
@@ -368,6 +325,6 @@ combo-box-base:editable:focused > .text-field,
     -fx-border-width: 0;
 }
 
-.dn-autocomplete {
+.dn-autocomplete * {
     -fx-text-fill: #fff;
 }

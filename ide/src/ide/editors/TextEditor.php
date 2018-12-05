@@ -28,6 +28,7 @@ class TextEditor extends AbstractEditor
         
         $this->editor = new CodeArea();
         $this->editor->addStylesheet(Ide::get()->getThemeManager()->getDefault()->getCodeEditorCssFile());
+        alert(fs::exists(Ide::get()->getThemeManager()->getDefault()->getCodeEditorCssFile()));
         
         switch (fs::ext($file)) {
             case "json":

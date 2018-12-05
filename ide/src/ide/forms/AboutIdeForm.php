@@ -25,6 +25,7 @@ class AboutIdeForm extends AbstractIdeForm
     public function doShow()
     {    
         $this->ide_name->text = Ide::get()->getName() . " " . Ide::get()->getVersion();
+        $this->logo->image = Ide::getImage(Ide::get()->getIcon(), [100, 100])->image;
         $this->about->text = "Venity & jPHP group\n\nContibutors:\ndim-s\nMWGuy\ngbowsky";
 
         $this->gitlink->on("click", fn() => browse("https://github.com/VenityStudio/Nearde-IDE"));

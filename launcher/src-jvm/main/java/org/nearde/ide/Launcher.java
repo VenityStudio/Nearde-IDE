@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Launcher {
     public static final String[] defaultJvmArgs = {
@@ -65,7 +66,7 @@ public class Launcher {
         }
     }
 
-    public void start() throws URISyntaxException, IOException, InterruptedException {
+    public void start(String[] mainArgs) throws URISyntaxException, IOException, InterruptedException {
         if (!isJava8FxExists()) {
             JOptionPane.showMessageDialog(null, "Oracle Java Runtime 9+ required with JavaFX", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -141,11 +142,13 @@ public class Launcher {
 
         jvmArgs = concatArrays(jvmArgs, new String[] { "-cp", classPaths.toString() });
 
-        String[] args = concatArrays(jvmArgs, new String[]{
+        String[] jargs = concatArrays(jvmArgs, new String[]{
                 "-Ddevelnext.launcher=root",
                 "-Denvironment=" + System.getProperty("environment", "prod"),
                 "-Ddevelnext.path=" + rootDir.getAbsolutePath(), "org.develnext.jphp.ext.javafx.FXLauncher"
         });
+
+        String[] args = (String[])ArrayUtils.addAll(jargs, mainArgs);
 
         System.out.println(join(args, " "));
 
@@ -155,7 +158,7 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
-        new Launcher().start();
+        new Launcher().start(args);
     }
 
     public static String join(Object[] array, String separator, int startIndex, int endIndex) {

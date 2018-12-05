@@ -165,6 +165,11 @@ class Ide extends Application
      */
     private $settingsContainer;
 
+    /**
+     * @var AbstractPlatform
+     */
+    private $platform;
+
     public function __construct($configPath = null)
     {
         parent::__construct($configPath);
@@ -187,6 +192,18 @@ class Ide extends Application
         $this->settingsContainer->register(new ExtensionsSettings());
 
         $this->asyncThreadPool = ThreadPool::createCached();
+
+        fs::scan($this->getLibrary()->getResourceDirectory("platforms"), function (string $path) {
+            if (fs::ext($path) == "jar") System::addClassPath($path);
+        });
+
+        fs::scan($this->getLibrary()->getResourceDirectory("plugins"), function (string $path) {
+            if (fs::ext($path) == "jar") System::addClassPath($path);
+        });
+
+        foreach ($GLOBALS['argv'] as $arg) if (class_exists($arg, true) && (new $arg) instanceof AbstractPlatform) $this->platform = new $arg;
+
+        if (!$this->platform) $this->platform = new IdeStandardPlatform();
     }
 
     public function launch()
@@ -214,6 +231,8 @@ class Ide extends Application
                     });
                     return;
                 }
+
+                $this->platform->onIdeStart();
             },
             function () {
                 $this->setOpenedProject(null);
@@ -1212,53 +1231,12 @@ class Ide extends Application
 
     public function registerAll()
     {
-        if (fs::exists($this->getLibrary()->getResourceDirectory("plugins")))
-            fs::scan($this->getLibrary()->getResourceDirectory("plugins"), function (string $path) {
-                if (fs::ext($path) == "jar") System::addClassPath($path);
-            });
-
         $this->cleanup();
 
         $extensions = $this->getInternalList('.nearde/extensions');
 
         foreach ($extensions as $extension) {
             $this->registerExtension($extension);
-        }
-
-        $valueEditors = $this->getInternalList('.nearde/propertyValueEditors');
-        foreach ($valueEditors as $valueEditor) {
-            $valueEditor = new $valueEditor();
-
-            ElementPropertyEditor::register($valueEditor);
-        }
-
-        $formats = $this->getInternalList('.nearde/formats');
-        foreach ($formats as $format) {
-            $this->registerFormat(new $format());
-        }
-
-        $projectTemplates = $this->getInternalList('.nearde/projectTemplates');
-        foreach ($projectTemplates as $projectTemplate) {
-            $this->registerProjectTemplate(new $projectTemplate());
-        }
-
-        $mainCommands = $this->getInternalList('.nearde/mainCommands');
-        $commands = [];
-        foreach ($mainCommands as $commandClass) {
-            /** @var AbstractCommand $command */
-            $command = new $commandClass();
-
-            $commands[] = $command;
-        }
-
-        $commands = arr::sort($commands, function (AbstractCommand $a, AbstractCommand $b) {
-            if ($a->getPriority() == $b->getPriority()) { return 0; }
-            if ($a->getPriority() < $b->getPriority()) { return 1; }
-            return -1;
-        });
-
-        foreach ($commands as $command) {
-            $this->registerCommand($command);
         }
 
         $this->library->update();
@@ -1426,7 +1404,7 @@ class Ide extends Application
             ProjectSystem::close(false);
         }
 
-        //WatcherSystem::shutdown();
+        $this->platform->onIdeShutdown();
 
         Logger::info("Finish IDE shutdown");
 
@@ -1434,10 +1412,8 @@ class Ide extends Application
             Logger::shutdown();
             parent::shutdown();
         } catch (\Exception $e) {
-            //System::halt(0);
+            System::halt(0);
         }
-
-        $done = true;
         
         System::halt(0);
     }
@@ -1610,5 +1586,38 @@ class Ide extends Application
     public function getExtensions(): array
     {
         return $this->extensions;
+    }
+
+    /**
+     * @return AbstractPlatform
+     */
+    public function getPlatform(): AbstractPlatform
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->platform->getIDEName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->platform->getIDEVersion();
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getIcon(): string
+    {
+        return $this->platform->getIDEIcon();
     }
 }

@@ -5,6 +5,7 @@ use ide\formats\PhpCodeFormat;
 use ide\project\supports\jppm\JPPMAppPluginSupport;
 use ide\project\supports\JPPMProjectSupport;
 use ide\project\supports\PHPProjectSupport;
+use ide\project\templates\PhpProjectTemplate;
 
 /**
  * Class PhpExtension
@@ -23,6 +24,7 @@ class PhpExtension extends AbstractExtension
         Ide::get()->registerProjectSupport(JPPMAppPluginSupport::class);
 
         Ide::get()->registerFormat(new PhpCodeFormat());
+        Ide::get()->registerProjectTemplate(new PhpProjectTemplate());
     }
 
     public function onIdeStart()
@@ -40,7 +42,7 @@ class PhpExtension extends AbstractExtension
 
     public function getAuthor(): string
     {
-        return "jPHP Group";
+        return "jPHP Group & Venity Group";
     }
 
     public function getVersion(): string

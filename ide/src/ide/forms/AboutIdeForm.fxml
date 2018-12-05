@@ -17,9 +17,6 @@
       <BorderPane prefHeight="400.0" prefWidth="306.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <ImageView id="logo" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-               <image>
-                  <Image url="/.data/img/logo.png" />
-               </image>
             </ImageView>
          </top>
          <padding>

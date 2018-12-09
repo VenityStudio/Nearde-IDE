@@ -7,6 +7,7 @@ use ide\editors\value\ElementPropertyEditor;
 use ide\formats\AbstractFormat;
 use ide\formats\IdeFormatOwner;
 use ide\forms\MainForm;
+use ide\forms\MainWindowForm;
 use ide\l10n\IdeLocalizer;
 use ide\l10n\L10n;
 use ide\library\IdeLibrary;
@@ -170,6 +171,21 @@ class Ide extends Application
      */
     private $platform;
 
+    /**
+     * @var MainForm
+     */
+    private $mainForm;
+
+    /**
+     * @var MainWindowForm
+     */
+    private $mainWindow;
+
+    /**
+     * @var AbstractMainWindowButton[]
+     */
+    private $mainWindowButtons;
+
     public function __construct($configPath = null)
     {
         parent::__construct($configPath);
@@ -223,18 +239,10 @@ class Ide extends Application
 
                 $this->readLanguages();
 
-                if ($this->handleArgs($GLOBALS['argv'])) {
-                    Logger::info("Protocol handler is shutdown ide ...");
-
-                    Timer::after('7s', function () {
-                        $this->shutdown();
-                    });
-                    return;
-                }
-
                 $this->platform->onIdeStart();
             },
             function () {
+                $this->mainForm = new MainForm();
                 $this->setOpenedProject(null);
 
                 foreach ($this->afterShow as $handle) {
@@ -249,8 +257,6 @@ class Ide extends Application
 
                 $timer = new AccurateTimer(1000, function () {
                     Ide::async(function () {
-                        $file = FileSystem::getSelected();
-
                         foreach (FileSystem::getOpened() as $info) {
                             if (!fs::exists($info['file'])) {
                                 uiLater(function () use ($info) {
@@ -266,6 +272,12 @@ class Ide extends Application
                 $timer->start();
 
                 $this->trigger('start', []);
+
+                $this->mainWindow = new MainWindowForm();
+
+                if ($this->getUserConfigValue("lastProject") == null)
+                    $this->mainWindow->show();
+                else $this->mainForm->show();
             }
         );
     }
@@ -1315,7 +1327,7 @@ class Ide extends Application
      */
     public function getMainForm()
     {
-        return parent::getMainForm();
+        return $this->mainForm;
     }
 
 
@@ -1451,6 +1463,22 @@ class Ide extends Application
         }
 
         return $cache[$resourceName] = $result;
+    }
+
+    /**
+     * @return AbstractMainWindowButton[]
+     */
+    public function getMainWindowButtons(): array
+    {
+        return $this->mainWindowButtons;
+    }
+
+    /**
+     * @return MainWindowForm
+     */
+    public function getMainWindow(): MainWindowForm
+    {
+        return $this->mainWindow;
     }
 
     /**
@@ -1619,5 +1647,9 @@ class Ide extends Application
     public function getIcon(): string
     {
         return $this->platform->getIDEIcon();
+    }
+
+    public function registerMainWindowButton(AbstractMainWindowButton $button): void {
+        $this->mainWindowButtons[] = $button;
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox id="root" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="450.0" minWidth="680.0" prefHeight="450.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox id="top_root" alignment="CENTER" prefHeight="142.0" prefWidth="600.0" spacing="8.0">
+         <children>
+            <ImageView id="ide_logo" fitHeight="122.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true" />
+            <Label id="ide_name" text="ide_name">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label id="ide_version" opacity="0.8" text="ide_version" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+      </VBox>
+      <VBox id="buttons_root" alignment="TOP_CENTER" prefHeight="257.0" prefWidth="600.0" spacing="8.0">
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </VBox>
+   </children>
+</VBox>

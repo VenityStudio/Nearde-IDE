@@ -15,10 +15,13 @@ use ide\commands\AboutCommand;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
 use ide\formats\MarkDownFormat;
-use ide\formats\PhpCodeFormat;
 use ide\formats\TextCodeFormat;
 use ide\formats\WelcomeFormat;
+use ide\mainWindow\CreateProjectMainWindowButton;
+use ide\mainWindow\OpenProjectMainWindowButton;
+use ide\mainWindow\SettingsMainWindowButton;
 use ide\systems\DialogSystem;
+use php\lang\System;
 
 class IdeStandardExtension extends AbstractExtension
 {
@@ -45,6 +48,14 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerFormat(new TextCodeFormat());
         Ide::get()->registerFormat(new MarkDownFormat());
         Ide::get()->registerFormat(new GroovyFormat());
+
+        if (System::getProperty("ide.mainWindow.createProject", true))
+            Ide::get()->registerMainWindowButton(new CreateProjectMainWindowButton());
+
+        if (System::getProperty("ide.mainWindow.openProject", true))
+            Ide::get()->registerMainWindowButton(new OpenProjectMainWindowButton());
+
+        Ide::get()->registerMainWindowButton(new SettingsMainWindowButton());
     }
 
     public function onIdeStart()
@@ -59,7 +70,7 @@ class IdeStandardExtension extends AbstractExtension
 
     public function getName(): string
     {
-        return Ide::get()->getName() . " Platform";
+        return "IDE Platform";
     }
 
     public function getAuthor(): string

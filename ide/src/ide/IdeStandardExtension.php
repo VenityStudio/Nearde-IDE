@@ -4,6 +4,7 @@ namespace ide;
 use ide\commands\CloseProjectCommand;
 use ide\commands\ExitCommand;
 use ide\commands\ExportProjectCommand;
+use ide\commands\IdeDebuggerCommand;
 use ide\commands\IdeLogShowCommand;
 use ide\commands\NewProjectCommand;
 use ide\commands\OpenProjectCommand;
@@ -12,6 +13,7 @@ use ide\commands\SaveProjectCommand;
 use ide\commands\SaveProjectForLibraryCommand;
 use ide\commands\SettingsCommand;
 use ide\commands\AboutCommand;
+use ide\commands\TopTreeMenuCommand;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
 use ide\formats\MarkDownFormat;
@@ -41,6 +43,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerCommand(new IdeLogShowCommand());
         Ide::get()->registerCommand(new SettingsCommand());
         Ide::get()->registerCommand(new AboutCommand());
+        Ide::get()->registerCommand(new TopTreeMenuCommand());
 
         // formats
         Ide::get()->registerFormat(new WelcomeFormat());

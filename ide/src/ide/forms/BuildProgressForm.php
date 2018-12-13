@@ -354,34 +354,6 @@ class BuildProgressForm extends AbstractIdeForm implements ProjectConsoleOutput
             $color = '#333333';
         }
 
-        if (str::startsWith($text, "[ERROR] ") || str::startsWith($text, "Fatal error: ")) {
-            $color = '#D8000C';
-
-            $this->message->text = $text;
-            $this->message->style = "-fx-text-fill: $color;";
-            $this->message->graphic = ico('error16');
-        }
-
-        if (str::startsWith($text, "[WARN] ") || str::startsWith($text, "[WARNING] ")) {
-            $color = '#9F6000';
-
-            $this->message->text = $text;
-            $this->message->style = "-fx-text-fill: $color;";
-            $this->message->graphic = ico('warning16');
-        }
-
-        if (str::startsWith($text, "[INFO] ")) {
-            $color = '#00529B';
-
-            $this->message->text = $text;
-            $this->message->style = "-fx-text-fill: $color;";
-            $this->message->graphic = ico('information16');
-        }
-
-        if (str::startsWith($text, "[DEBUG] ") || $text[0] == ':' || str::trimLeft($text)[0] == '#') {
-            $color = '#5c5c5c';
-        }
-
         if (Regex::match("^\\u001B\\[[0-9\\;\\+]+[m]{1}", $text)) {
             $spec_ch = chr(27);
             foreach ($ANSI_CODES as $c => $code) {
@@ -389,7 +361,7 @@ class BuildProgressForm extends AbstractIdeForm implements ProjectConsoleOutput
                     $color = $c;
                     $text = str::sub($text, str::length($code) + 3);
                     $text = str::replace($text, "{$spec_ch}[{$ANSI_CODES['off']}m", "");
-                    break;
+                    //break;
                 }
             }
         }

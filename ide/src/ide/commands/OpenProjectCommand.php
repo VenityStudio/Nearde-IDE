@@ -34,30 +34,6 @@ class OpenProjectCommand extends AbstractCommand
         return true;
     }
 
-    public function makeUiForHead()
-    {
-        $button = $this->makeGlyphButton();
-
-        $split = new UXSplitMenuButton($button->text, $button->graphic);
-        $split->maxHeight = 9999;
-        $split->tooltipText = $button->tooltipText;
-        $split->on('action', $this->makeAction());
-
-        $dialog = new OpenProjectForm();
-
-        $openItem = new UXMenuItem('Открыть проект из файла');
-        $openItem->on('action', [$dialog, 'doOpenButtonClick']);
-        $split->items->add($openItem);
-
-        $split->items->add(UXMenuItem::createSeparator());
-
-        $item = $this->makeMenuItem();
-        $item->text = 'Все проекты';
-        $split->items->add($item);
-
-        return $split;
-    }
-
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
         static $dialog = null;

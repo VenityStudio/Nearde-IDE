@@ -66,12 +66,6 @@ class RunTaskCommand extends AbstractCommand
         $taskSelect->maxHeight = PHP_INT_MAX;
         $taskSelect->minWidth = 120;
 
-        /*$taskSelect->on('action', function () {
-            uiLater(function () {
-                $this->runButton->enabled = $this->taskSelect->value;
-            });
-        });*/
-
         $panel->add($taskSelect);
         $panel->add($this->stopButton);
 
@@ -250,7 +244,7 @@ class RunTaskCommand extends AbstractCommand
         return true;
     }
 
-    public function makeUiForHead()
+    public function makeUiForRightHead()
     {
         $this->update();
         return $this->panel;

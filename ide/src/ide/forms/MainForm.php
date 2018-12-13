@@ -104,11 +104,9 @@ class MainForm extends AbstractIdeForm
             $this->opacity = 1;
         });
 
-        $mainMenu = $this->mainMenu; // FIX!!!!! see FixSkinMenu
-
         $this->headRightPane->spacing = 5;
 
-        $pane = new UXDndTabPane();
+        $pane = new UXTabPane();
 
         $parent = $this->fileTabPane->parent;
         $this->fileTabPane->free();
@@ -118,6 +116,9 @@ class MainForm extends AbstractIdeForm
         $tabPane->id = 'fileTabPane';
         $tabPane->tabClosingPolicy = 'ALL_TABS';
         $tabPane->classes->add('dn-file-tab-pane');
+        $tabPane->on("change", function () {
+            Ide::get()->trigger("tabsChange");
+        });
 
         if ($pane) {
             UXAnchorPane::setAnchor($pane, 0);

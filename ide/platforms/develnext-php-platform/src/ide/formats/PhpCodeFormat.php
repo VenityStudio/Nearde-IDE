@@ -33,7 +33,8 @@ class PhpCodeFormat extends AbstractFormat
         $editor = new TextEditor($file);
         $editor->getEditor()->setHighlighter(PhpHighlighter::class);
 
-        $this->autoComplete = new AutoCompletePane($editor->getEditor()->getRichArea(), new PhpAutoComplete(Ide::project()->getInspector("php")));
+        $this->autoComplete = new AutoCompletePane($editor->getEditor()->getRichArea(),
+            new PhpAutoComplete($options["inspector"] ?: Ide::project()->getInspector("php")));
 
         return $editor;
     }

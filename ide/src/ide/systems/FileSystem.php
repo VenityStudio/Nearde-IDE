@@ -7,6 +7,7 @@ use ide\editors\menu\ContextMenu;
 use ide\forms\MainForm;
 use ide\Ide;
 use ide\Logger;
+use ide\misc\EventHandlerBehaviour;
 use ide\utils\FileUtils;
 use ide\utils\Json;
 use ide\utils\UiUtils;
@@ -32,6 +33,8 @@ use timer\AccurateTimer;
 
 class FileSystem
 {
+    use EventHandlerBehaviour;
+
     /**
      * @var AbstractEditor[]
      */
@@ -496,6 +499,8 @@ class FileSystem
                 if ($tab) {
                     Logger::debug("Opening selected tab '$tab->text'");
 
+                    Ide::get()->trigger("openTab");
+
                     if (static::$editorSplitDividerWidth && $tab->content instanceof UXSplitPane) {
                         $tab->content->dividerPositions = [(static::$editorSplitDividerWidth + 3) / $tab->content->layoutBounds['width']];
                     }
@@ -618,6 +623,8 @@ class FileSystem
         } else {
             static::$openedTabs[$hash] = $tab;
         }
+
+        Ide::get()->trigger("openFile");
 
         return $editor;
     }

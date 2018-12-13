@@ -31,11 +31,6 @@ class NewProjectCommand extends AbstractCommand
         return true;
     }
 
-    public function makeUiForHead()
-    {
-        return $this->makeGlyphButton();
-    }
-
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
         $dialog = new NewProjectForm();

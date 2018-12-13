@@ -32,16 +32,6 @@ class ExportProjectCommand extends AbstractProjectCommand
         return 'Ctrl + Shift + S';
     }
 
-    public function makeUiForHead()
-    {
-        return [$this->makeGlyphButton(), new UXSeparator('VERTICAL')];
-    }
-
-    public function withBeforeSeparator()
-    {
-        return true;
-    }
-
     public function isAlways()
     {
         return true;

@@ -250,7 +250,7 @@
     -fx-font-family: "Source Sans Pro Regular";
 }
 .font-bold {
-    -fx-font-family: "Source Sans Pro SemiBold";
+    -fx-font-weight: bold;
 }
 
 .font-accent {

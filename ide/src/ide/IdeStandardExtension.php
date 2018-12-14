@@ -14,6 +14,7 @@ use ide\commands\SaveProjectForLibraryCommand;
 use ide\commands\SettingsCommand;
 use ide\commands\AboutCommand;
 use ide\commands\TopTreeMenuCommand;
+use ide\editors\hotkey\AutoBracketHotKey;
 use ide\editors\hotkey\DuplicateHotKey;
 use ide\editors\TextEditor;
 use ide\formats\CssCodeFormat;
@@ -63,6 +64,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerMainWindowButton(new SettingsMainWindowButton());
 
         TextEditor::registerHotKey(new DuplicateHotKey());
+        TextEditor::registerHotKey(new AutoBracketHotKey());
     }
 
     public function onIdeStart()

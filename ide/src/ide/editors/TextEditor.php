@@ -31,9 +31,13 @@ class TextEditor extends AbstractEditor
         $this->editor = new CodeArea();
         $this->editor->addStylesheet(Ide::get()->getThemeManager()->getDefault()->getCodeEditorCssFile());
 
-        $this->editor->getRichArea()->on("keyDown", function (UXKeyEvent $event) {
+        $this->editor->getRichArea()->on("keyUp", function (UXKeyEvent $event) {
             foreach (static::$hotkeys as $hotKey)
-                if ($event->matches($hotKey->getAccelerator())) $hotKey->execute($this->editor, $event);
+                if ($hotKey->getAccelerator() == null || $event->matches($hotKey->getAccelerator()))
+                    $hotKey->execute($this->editor, $event);
+
+            $this->editor->getHighlighter()->applyHighlight();
+            $this->editor->getHighlighter()->trigger("applyHighlight");
         });
 
         switch (fs::ext($file)) {

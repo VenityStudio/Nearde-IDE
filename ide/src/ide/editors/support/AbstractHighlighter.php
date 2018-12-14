@@ -19,10 +19,7 @@ abstract class AbstractHighlighter
     }
 
     public function apply() {
-        $this->codeArea->getRichArea()->on("keyUp", function () {
-            $this->applyHighlight();
-            $this->trigger("applyHighlight");
-        });
+        // nup.
     }
 
     abstract public function applyHighlight() : void;

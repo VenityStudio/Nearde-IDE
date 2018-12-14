@@ -16,6 +16,7 @@ use ide\commands\AboutCommand;
 use ide\commands\TopTreeMenuCommand;
 use ide\editors\hotkey\AutoBracketHotKey;
 use ide\editors\hotkey\DuplicateHotKey;
+use ide\editors\hotkey\EnterHotKey;
 use ide\editors\TextEditor;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
@@ -64,6 +65,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerMainWindowButton(new SettingsMainWindowButton());
 
         TextEditor::registerHotKey(new DuplicateHotKey());
+        TextEditor::registerHotKey(new EnterHotKey());
         TextEditor::registerHotKey(new AutoBracketHotKey());
     }
 

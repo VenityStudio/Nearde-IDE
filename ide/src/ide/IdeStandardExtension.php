@@ -14,6 +14,8 @@ use ide\commands\SaveProjectForLibraryCommand;
 use ide\commands\SettingsCommand;
 use ide\commands\AboutCommand;
 use ide\commands\TopTreeMenuCommand;
+use ide\editors\hotkey\DuplicateHotKey;
+use ide\editors\TextEditor;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
 use ide\formats\MarkDownFormat;
@@ -59,6 +61,8 @@ class IdeStandardExtension extends AbstractExtension
             Ide::get()->registerMainWindowButton(new OpenProjectMainWindowButton());
 
         Ide::get()->registerMainWindowButton(new SettingsMainWindowButton());
+
+        TextEditor::registerHotKey(new DuplicateHotKey());
     }
 
     public function onIdeStart()

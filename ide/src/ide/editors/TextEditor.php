@@ -36,8 +36,10 @@ class TextEditor extends AbstractEditor
                 if ($hotKey->getAccelerator() == null || $event->matches($hotKey->getAccelerator()))
                     $hotKey->execute($this->editor, $event);
 
-            $this->editor->getHighlighter()->applyHighlight();
-            $this->editor->getHighlighter()->trigger("applyHighlight");
+            if ($this->editor->getHighlighter()) {
+                $this->editor->getHighlighter()->applyHighlight();
+                $this->editor->getHighlighter()->trigger("applyHighlight");
+            }
         });
 
         switch (fs::ext($file)) {

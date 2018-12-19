@@ -170,4 +170,9 @@ class IdeLanguage
     {
         return $this->beta;
     }
+
+    public function __toString()
+    {
+        return $this->title;
+    }
 }

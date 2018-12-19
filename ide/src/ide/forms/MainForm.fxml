@@ -23,10 +23,7 @@
                                 <MenuBar focusTraversable="false" prefHeight="25.0" prefWidth="900.0">
                                     <menus>
                                         <Menu id="menuProject" mnemonicParsing="false" text="menu.project"/>
-                                        <Menu id="menuAccount" text="menu.account" visible="false"/>
-                                        <!--<Menu id="menuRun" text="menu.run"/>-->
                                         <Menu id="menuHelp" text="menu.help"/>
-                                        <Menu id="menuL10n" text="Language" />
                                     </menus>
                                     <opaqueInsets>
                                         <Insets/>

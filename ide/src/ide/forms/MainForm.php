@@ -212,53 +212,10 @@ class MainForm extends AbstractIdeForm
         parent::show();
         Logger::info("Show main form ...");
 
-        $ideLanguage = Ide::get()->getLanguage();
-
-        $menu = $this->findSubMenu('menuL10n');
-        $menu->items->clear();
-
-        if ($ideLanguage) {
-            $menu->graphic = Ide::get()->getImage(new UXImage($ideLanguage->getIcon()));
-            $menu->text = 'Language';
-        }
-
-        foreach (Ide::get()->getLanguages() as $language) {
-            $item = new UXMenuItem($language->getTitle(), Ide::get()->getImage(new UXImage($language->getIcon())));
-
-            if ($language->getTitle() != $language->getTitleEn()) {
-                $item->text .= ' (' . $language->getTitleEn() . ')';
-            }
-
-            if ($language->isBeta()) {
-                $item->text .= ' (Beta Version)';
-            }
-
-            //$item->enabled = !$ideLanguage || $language->getCode() != $ideLanguage->getCode();
-
-            $item->on('action', function () use ($language, $item, $menu) {
-                /*$msg = new MessageBoxForm($language->getRestartMessage(), [$language->getRestartYes(), $language->getRestartNo()]);
-                $msg->makeWarning();
-                $msg->showDialog();*/
-
-                $menu->graphic = Ide::get()->getImage(new UXImage($language->getIcon()));
-                Ide::get()->setUserConfigValue('ide.language', $language->getCode());
-                Ide::get()->getLocalizer()->language = $language->getCode();
-
-                /*if ($msg->getResultIndex() == 0) {
-                    Ide::get()->restart();
-                }*/
-            });
-
-            $menu->items->add($item);
-        }
 
         $screen = UXScreen::getPrimary();
 
         $this->showBottom(null);
-
-        /*$this->contentSplitPane->dividerPositions = Ide::get()->getUserConfigArrayValue(get_class($this) . '.dividerPositions', $this->contentSplitPane->dividerPositions);
-        $this->contentSplitPaneDividerPositions = $this->contentSplitPane->dividerPositions;
-        */
 
         $this->width  = Ide::get()->getUserConfigValue(get_class($this) . '.width', $screen->bounds['width'] * 0.75);
         $this->height = Ide::get()->getUserConfigValue(get_class($this) . '.height', $screen->bounds['height'] * 0.75);
@@ -283,10 +240,6 @@ class MainForm extends AbstractIdeForm
         $this->observer('maximized')->addListener(function ($old, $new) {
             Ide::get()->setUserConfigValue(get_class($this) . '.maximized', $new);
         });
-
-        /*$this->contentSplitPane->items[0]->observer('width')->addListener(function ($old, $new) {
-            Ide::get()->setUserConfigValue(get_class($this) . '.dividerPositions', $new);
-        });*/
 
         foreach (['width', 'height', 'x', 'y'] as $prop) {
             $this->observer($prop)->addListener(function ($old, $new) use ($prop) {

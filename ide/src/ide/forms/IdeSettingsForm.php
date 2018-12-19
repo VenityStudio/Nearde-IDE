@@ -50,11 +50,11 @@ class IdeSettingsForm extends AbstractIdeForm
         foreach ($this->settings as $setting) {
             $tab = new UXTab();
             $tab->data("setting.name", $setting->getName());
-            $tab->text = _($setting->getName());
+            $tab->text = $setting->getName();
             $tab->content = $setting->getNode();
             $tab->graphic = Ide::getImage($setting->getIcon16(), [16, 16]);
 
-            $this->setting_tabs->tabs->add($tab);
+            $this->setting_tabs->tabs->add(_($tab));
         }
     }
 

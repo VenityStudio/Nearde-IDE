@@ -17,3 +17,7 @@ Example build command for windows platform: ``jppm build-ide --win``
 
  - linux
  - windows (win)
+
+## Screenshot
+
+![Project RC2](https://pp.userapi.com/c848736/v848736564/e47eb/N9_g9ECaUl0.jpg)

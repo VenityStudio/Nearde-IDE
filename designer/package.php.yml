@@ -4,12 +4,22 @@ version: 1.0.0
 plugins: [Gradle, Hub]
 
 sources:
-- src
+  - src
+
+jfx:
+  version: 11.0.2
 
 deps:
-  jphp-core: '~1.0.0'
-  jphp-gui-ext: '~1.0.0'
+  jphp-core: '*'
+  jphp-gui-ext: '*'
 
 gradle:
   deps:
-  - 'org.fxmisc.richtext:richtextfx:0.9.0'
+    - 'org.fxmisc.richtext:richtextfx:0.9.0'
+  providedDeps:
+    - 'org.openjfx:javafx-base:%jfx.version%:linux'
+    - 'org.openjfx:javafx-graphics:%jfx.version%:linux'
+    - 'org.openjfx:javafx-controls:%jfx.version%:linux'
+    - 'org.openjfx:javafx-web:%jfx.version%:linux'
+    - 'org.openjfx:javafx-fxml:%jfx.version%:linux'
+    - 'org.openjfx:javafx-media:%jfx.version%:linux'

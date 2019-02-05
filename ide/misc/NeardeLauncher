@@ -9,8 +9,5 @@ realpath() {
 }
 
 APP_HOME=$(dirname "$(realpath "$0")")
-JAVA_HOME="$APP_HOME/jre"
-JAVA_BIN="$JAVA_HOME/bin/java"
-
 cd "$APP_HOME"
-exec "$JAVA_BIN" -jar "$APP_HOME/NeardeLauncher.jar"
+exec java -jar "$APP_HOME/NeardeLauncher.jar"

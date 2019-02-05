@@ -32,7 +32,7 @@ function task_prepareIde(Event $e)
 
 /**
  * @jppm-task start-ide
- * @jppm-description Start IDE (DevelNext)
+ * @jppm-description Start IDE (Nearde)
  */
 function task_startIde(Event $e)
 {
@@ -115,48 +115,7 @@ function task_buildIde(Event $e)
 
     Tasks::deleteFile('./launcher/build');
     Tasks::runExternal('./launcher', 'build');
-    Tasks::deleteFile("./ide/build/DevelNext.jar");
     Tasks::copy('./launcher/build/NeardeLauncher.jar', './ide/build');
 
     Tasks::runExternal('./ide', 'copySourcesToBuild');
-
-    $os = $e->isFlag('linux') ? 'linux' : 'win';
-
-    $jrePath = $e->package()->getAny("jre.$os");
-
-    if ($jrePath) {
-        if (fs::isDir("./tools/build/jre/$os")) {
-            Tasks::copy("./tools/build/jre/$os", "./ide/build/jre");
-        } else {
-            switch (fs::ext($jrePath)) {
-                case 'xz':
-                    $arch = new TarArchive(new Lz4InputStream($jrePath));
-                    break;
-                case 'gz':
-                    $arch = new TarArchive(new GzipInputStream($jrePath));
-                    break;
-                case 'bz2':
-                    $arch = new TarArchive(new Bzip2InputStream($jrePath));
-                    break;
-                case 'zip':
-                    $arch = new ZipArchive($jrePath);
-                    break;
-
-                default:
-                    Console::error("Unable to unpack '$jrePath', unknown archive format");
-                    exit(-1);
-            }
-
-            $arch->readAll(function (ArchiveEntry $e, ?Stream $stream) use ($os) {
-                if ($stream) {
-                    Console::print("-> copy $e->name to jre dir ...");
-                    fs::ensureParent("./tools/build/jre/$os/$e->name");
-                    fs::copy($stream, "./tools/build/jre/$os/$e->name", null, 8388608 /* 1024 * 1024 * 8 */);
-                    Console::log(".. done.");
-                }
-            });
-
-            Tasks::copy("./tools/build/jre/$os", "./ide/build/jre");
-        }
-    }
 }

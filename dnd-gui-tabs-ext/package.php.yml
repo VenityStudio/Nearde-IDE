@@ -3,6 +3,18 @@ version: 1.0.0
 
 plugins: [Gradle, Hub]
 
+jfx:
+  version: 11.0.2
+
 deps:
-  jphp-runtime: '~1.0.0'
-  jphp-gui-ext: '~1.0.0'
+  jphp-runtime: '*'
+  jphp-gui-ext: '*'
+  
+gradle:
+  providedDeps:
+    - 'org.openjfx:javafx-base:%jfx.version%:linux'
+    - 'org.openjfx:javafx-graphics:%jfx.version%:linux'
+    - 'org.openjfx:javafx-controls:%jfx.version%:linux'
+    - 'org.openjfx:javafx-web:%jfx.version%:linux'
+    - 'org.openjfx:javafx-fxml:%jfx.version%:linux'
+    - 'org.openjfx:javafx-media:%jfx.version%:linux'

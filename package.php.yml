@@ -1,32 +1,9 @@
 name: Nearde IDE
-version: 0.1.0
+version: 0.2.0
 
 requires:
-  java: {version: '>=9.0.0', arch: amd64}
-  os:
-    - Windows
-    - Linux
-
-bundles:
-  - dn-game2d-bundle
-  - dn-debug-bundle
-  - dn-jsoup-bundle
-  - dn-mail-bundle
-  - dn-systemtray-bundle
-  - dn-zip-bundle
-  - dn-httpclient-bundle
-  - dn-hotkey-bundle
-  - dn-jfoenix-bundle
-  - dn-sql-bundle
-  - dn-sqlite-bundle
-  - dn-mysql-bundle
-  - dn-pgsql-bundle
-  - dn-firebirdsql-bundle
+  java: {version: '>=11.0.0', arch: amd64}
 
 localization:
   source-dir: './ide/misc/languages'
   languages: [ru, en]
-
-jre:
-  win: './jre/jre-win64-10.0.2.tar.gz'
-  linux: './jre/jre-linux64-10.0.2.tar.gz'

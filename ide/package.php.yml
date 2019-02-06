@@ -38,24 +38,6 @@ deps:
 
 app:
   disable-launcher: true
-  jvm-args:
-    - '-Ddevelnext.noCodeCache=true'
-    - '--add-exports=java.desktop/java.awt.dnd.peer=javafx.swing'
-    - '--add-exports=java.desktop/sun.awt=javafx.swing'
-    - '--add-exports=java.desktop/sun.awt.dnd=javafx.swing'
-    - '--add-exports=java.desktop/sun.swing=javafx.swing'
-    - '--add-exports=javafx.base/com.sun.javafx=ALL-UNNAMED'
-    - '--add-exports=javafx.base/com.sun.javafx.collections=ALL-UNNAMED'
-    - '--add-exports=javafx.graphics/com.sun.javafx.css=ALL-UNNAMED'
-    - '--add-exports=javafx.graphics/com.sun.javafx.cursor=ALL-UNNAMED'
-    - '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED'
-    - '--add-exports=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED'
-    - '--add-exports=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED'
-    - '--add-exports=javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED'
-    - '--add-exports=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
-    - '--add-exports=javafx.controls/com.sun.javafx.scene.control.skin=ALL-UNNAMED'
-    - '--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED'
-    - '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED'
   build:
     file-name: 'nearde-lib'
     type: 'multi-jar'

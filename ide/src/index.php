@@ -8,17 +8,8 @@ use ide\systems\IdeSystem;
 use php\gui\designer\UXDesignProperties;
 use php\gui\UXDialog;
 use php\gui\UXNode;
-use php\lang\System;
 
-$cache = false;//!IdeSystem::isDevelopment();
-
-if (System::getProperty('develnext.noCodeCache')) {
-    $cache = false;
-}
-
-//$cache = true; //  TODO delete it.
-
-$loader = new IdeClassLoader($cache, IdeSystem::getOwnLibVersion());
+$loader = new IdeClassLoader(false, IdeSystem::getOwnLibVersion());
 $loader->register(true);
 
 IdeSystem::setLoader($loader);

@@ -74,6 +74,11 @@ class Ide extends Application
     private $OS;
 
     /**
+     * @var Ide
+     */
+    static private $ide;
+
+    /**
      * @var AbstractProjectTemplate[]
      */
     protected $projectTemplates = [];
@@ -154,7 +159,7 @@ class Ide extends Application
     /**
      * @var string
      */
-    protected $mode = 'prod';
+    protected $mode = 'dev';
 
     /**
      * @var ThemeManager
@@ -176,19 +181,10 @@ class Ide extends Application
      */
     private $mainForm;
 
-    /**
-     * @var MainWindowForm
-     */
-    private $mainWindow;
-
-    /**
-     * @var AbstractMainWindowButton[]
-     */
-    private $mainWindowButtons;
-
     public function __construct($configPath = null)
     {
         parent::__construct($configPath);
+        static::$ide = $this;
 
         $this->OS = IdeSystem::getOs();
         $this->mode = IdeSystem::getMode();
@@ -199,23 +195,22 @@ class Ide extends Application
         $this->localizer->setUseDefaultValuesForLang('ru');
 
         $this->themeManager = new ThemeManager();
-        $this->themeManager->register($l = new LightTheme());
-        $this->themeManager->register(new DarkTheme());
-        $this->themeManager->setDefault($this->getUserConfigValue("ide.theme", $l->getName()));
+        $this->themeManager->register($l = new LightTheme);
+        $this->themeManager->register(new DarkTheme);
 
         $this->settingsContainer = new SettingsContainer();
-        $this->settingsContainer->register(new IdeSettings());
-        $this->settingsContainer->register(new ExtensionsSettings());
+        $this->settingsContainer->register(new IdeSettings);
+        $this->settingsContainer->register(new ExtensionsSettings);
 
         $this->asyncThreadPool = ThreadPool::createCached();
 
-        fs::scan($this->getLibrary()->getResourceDirectory("platforms"), function (string $path) {
-            if (fs::ext($path) == "jar") System::addClassPath($path);
-        });
-
-        fs::scan($this->getLibrary()->getResourceDirectory("plugins"), function (string $path) {
-            if (fs::ext($path) == "jar") System::addClassPath($path);
-        });
+        foreach ([
+            $this->getLibrary()->getResourceDirectory("platforms"),
+            $this->getLibrary()->getResourceDirectory("plugins")
+                 ] as $path)
+            fs::scan($path, function (string $path) {
+                if (fs::ext($path) == "jar") System::addClassPath($path);
+            });
 
         foreach ($GLOBALS['argv'] as $arg) if (class_exists($arg, true) && (new $arg) instanceof AbstractPlatform) $this->platform = new $arg;
 
@@ -272,12 +267,7 @@ class Ide extends Application
                 $timer->start();
 
                 $this->trigger('start', []);
-
-                $this->mainWindow = new MainWindowForm();
-
-                if ($this->getUserConfigValue("lastProject") == null)
-                    $this->mainWindow->show();
-                else $this->mainForm->show();
+                $this->mainForm->show();
             }
         );
     }
@@ -1333,11 +1323,10 @@ class Ide extends Application
 
     /**
      * @return Ide
-     * @throws \Exception
      */
     public static function get()
     {
-        return parent::get();
+        return static::$ide;
     }
 
     /**
@@ -1463,22 +1452,6 @@ class Ide extends Application
         }
 
         return $cache[$resourceName] = $result;
-    }
-
-    /**
-     * @return AbstractMainWindowButton[]
-     */
-    public function getMainWindowButtons(): array
-    {
-        return $this->mainWindowButtons;
-    }
-
-    /**
-     * @return MainWindowForm
-     */
-    public function getMainWindow(): MainWindowForm
-    {
-        return $this->mainWindow;
     }
 
     /**
@@ -1647,9 +1620,5 @@ class Ide extends Application
     public function getIcon(): string
     {
         return $this->platform->getIDEIcon();
-    }
-
-    public function registerMainWindowButton(AbstractMainWindowButton $button): void {
-        $this->mainWindowButtons[] = $button;
     }
 }

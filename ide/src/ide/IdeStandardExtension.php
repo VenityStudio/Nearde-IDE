@@ -23,6 +23,7 @@ use ide\formats\GroovyFormat;
 use ide\formats\MarkDownFormat;
 use ide\formats\TextCodeFormat;
 use ide\formats\WelcomeFormat;
+use ide\formats\XMLFormat;
 use ide\mainWindow\CreateProjectMainWindowButton;
 use ide\mainWindow\OpenProjectMainWindowButton;
 use ide\mainWindow\SettingsMainWindowButton;
@@ -31,6 +32,9 @@ use php\lang\System;
 
 class IdeStandardExtension extends AbstractExtension
 {
+    /**
+     * @throws \Exception
+     */
     public function onRegister()
     {
         DialogSystem::registerDefaults();
@@ -47,7 +51,6 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerCommand(new IdeLogShowCommand());
         Ide::get()->registerCommand(new SettingsCommand());
         Ide::get()->registerCommand(new AboutCommand());
-        Ide::get()->registerCommand(new TopTreeMenuCommand());
 
         // formats
         Ide::get()->registerFormat(new WelcomeFormat());
@@ -55,14 +58,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerFormat(new TextCodeFormat());
         Ide::get()->registerFormat(new MarkDownFormat());
         Ide::get()->registerFormat(new GroovyFormat());
-
-        if (System::getProperty("ide.mainWindow.createProject", true))
-            Ide::get()->registerMainWindowButton(new CreateProjectMainWindowButton());
-
-        if (System::getProperty("ide.mainWindow.openProject", true))
-            Ide::get()->registerMainWindowButton(new OpenProjectMainWindowButton());
-
-        Ide::get()->registerMainWindowButton(new SettingsMainWindowButton());
+        Ide::get()->registerFormat(new XMLFormat());
 
         TextEditor::registerHotKey(new DuplicateHotKey());
         TextEditor::registerHotKey(new EnterHotKey());

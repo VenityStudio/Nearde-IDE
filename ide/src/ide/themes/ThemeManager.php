@@ -3,6 +3,7 @@
 namespace ide\themes;
 
 
+use ide\Ide;
 use ide\Logger;
 
 class ThemeManager
@@ -27,6 +28,9 @@ class ThemeManager
         }
 
         $this->themes[$theme->getName()] = $theme;
+
+        if ($this->default == null)
+            $this->default = Ide::get()->getUserConfigValue("ide.theme", $theme->getName());
     }
 
     public function setDefault(string $name) {

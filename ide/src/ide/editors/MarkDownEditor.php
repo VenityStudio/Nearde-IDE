@@ -36,9 +36,9 @@ class MarkDownEditor extends AbstractEditor
     public function __construct(string $file)
     {
         parent::__construct($file);
-
-        $this->editor = new TextEditor($file);
         $this->browser = new UXWebView();
+        $this->editor = new TextEditor($file);
+        $this->editor->getEditor()->setHighlighter(MarkDownHighlighter::class);
         $this->editor->getEditor()->getHighlighter()->on("applyHighlight", [$this, "render"]);
     }
 

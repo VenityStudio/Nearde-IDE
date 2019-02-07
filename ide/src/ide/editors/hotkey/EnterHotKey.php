@@ -25,6 +25,7 @@ class EnterHotKey extends AbstractHotKey
     public function execute(CodeArea $area, UXKeyEvent $event): void
     {
         $pos = $area->getRichArea()->caretPosition;
+
         $lastChar = trim($area->getRichArea()->getTextOfPosition($pos - 2, $pos - 1));
 
         if (arr::has([ "{", "(", "[" ], $lastChar)) {

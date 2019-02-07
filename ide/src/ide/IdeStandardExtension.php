@@ -4,7 +4,6 @@ namespace ide;
 use ide\commands\CloseProjectCommand;
 use ide\commands\ExitCommand;
 use ide\commands\ExportProjectCommand;
-use ide\commands\IdeDebuggerCommand;
 use ide\commands\IdeLogShowCommand;
 use ide\commands\NewProjectCommand;
 use ide\commands\OpenProjectCommand;
@@ -20,15 +19,13 @@ use ide\editors\hotkey\EnterHotKey;
 use ide\editors\TextEditor;
 use ide\formats\CssCodeFormat;
 use ide\formats\GroovyFormat;
+use ide\formats\JsonFormat;
 use ide\formats\MarkDownFormat;
 use ide\formats\TextCodeFormat;
 use ide\formats\WelcomeFormat;
 use ide\formats\XMLFormat;
-use ide\mainWindow\CreateProjectMainWindowButton;
-use ide\mainWindow\OpenProjectMainWindowButton;
-use ide\mainWindow\SettingsMainWindowButton;
+use ide\formats\YamlFormat;
 use ide\systems\DialogSystem;
-use php\lang\System;
 
 class IdeStandardExtension extends AbstractExtension
 {
@@ -51,6 +48,7 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerCommand(new IdeLogShowCommand());
         Ide::get()->registerCommand(new SettingsCommand());
         Ide::get()->registerCommand(new AboutCommand());
+        Ide::get()->registerCommand(new TopTreeMenuCommand());
 
         // formats
         Ide::get()->registerFormat(new WelcomeFormat());
@@ -59,9 +57,11 @@ class IdeStandardExtension extends AbstractExtension
         Ide::get()->registerFormat(new MarkDownFormat());
         Ide::get()->registerFormat(new GroovyFormat());
         Ide::get()->registerFormat(new XMLFormat());
+        Ide::get()->registerFormat(new YamlFormat());
+        Ide::get()->registerFormat(new JsonFormat());
 
         TextEditor::registerHotKey(new DuplicateHotKey());
-        TextEditor::registerHotKey(new EnterHotKey());
+        //TextEditor::registerHotKey(new EnterHotKey()); // БАГНУТЫЙ
         TextEditor::registerHotKey(new AutoBracketHotKey());
     }
 

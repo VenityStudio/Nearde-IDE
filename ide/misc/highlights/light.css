@@ -50,3 +50,11 @@
 .syntax-text-area .text.variable {
     -fx-fill: #660000;
 }
+
+.syntax-text-area .text.error {
+    -rtfx-background-color: rgba(255, 0, 0, 0.61);
+}
+
+.syntax-text-area .text.warning {
+    -rtfx-background-color: rgba(255, 237, 69, 0.31);
+}

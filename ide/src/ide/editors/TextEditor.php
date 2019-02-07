@@ -41,16 +41,6 @@ class TextEditor extends AbstractEditor
                 $this->editor->getHighlighter()->trigger("applyHighlight");
             }
         });
-
-        switch (fs::ext($file)) {
-            case "json":
-                $this->editor->setHighlighter(JsonHighlighter::class);
-                break;
-            case "md":
-            case "MD":
-                $this->editor->setHighlighter(MarkDownHighlighter::class);
-                break;
-        }
     }
 
     public function load()

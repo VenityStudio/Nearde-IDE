@@ -27,14 +27,14 @@ class GroovyHighlighter extends AbstractHighlighter
     
     public function applyHighlight() : void
     {
-        $this->codeArea->getRichArea()->clearStyle(0, str::length($this->codeArea->getRichArea()->text));
+        $this->clearCodeAreaStyle();
 
         $regex = Regex::of(str::join([
             "(?<STRING>\"(.)+\")",
             "|(?<STRINGALT>\'(.)+\')",
             "|(?<COMMENT>//(.)+$)",
             "|(?<KEYWORD>\\b(" .str::join($this->keywords, "|"). ")\\b)",
-            "|(?<NUM>([0-9])+)",
+            "|(?<NUM>[-+]?[0-9]*\.?[0-9]+)",
         ], null),Regex::MULTILINE, $this->codeArea->getRichArea()->text);
 
         while ($regex->find())

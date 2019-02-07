@@ -23,7 +23,7 @@ class XMLHighlighter extends AbstractHighlighter
      */
     public function applyHighlight() : void
     {
-        $this->codeArea->getRichArea()->clearStyle(0, str::length($this->codeArea->getRichArea()->text));
+        $this->clearCodeAreaStyle();
 
         $regex = Regex::of(
             "(?<ELEMENT>(<\/?\\h*)([A-Za-z0-9_-]+)([^<>]*)(\\h*/?>))|(?<COMMENT><!--[^<>]+-->)",

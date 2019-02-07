@@ -27,7 +27,7 @@ class MarkDownHighlighter extends AbstractHighlighter
      */
     public function applyHighlight(): void
     {
-        $this->codeArea->getRichArea()->clearStyle(0, str::length($this->codeArea->getRichArea()->text));
+        $this->clearCodeAreaStyle();
 
         $regex = Regex::of(str::join([
             "(?<H1>^# (.)+$)",

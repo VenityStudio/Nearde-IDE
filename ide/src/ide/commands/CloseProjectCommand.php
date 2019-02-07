@@ -5,6 +5,7 @@ use ide\editors\AbstractEditor;
 use ide\Ide;
 use ide\misc\AbstractCommand;
 use ide\systems\FileSystem;
+use ide\systems\IdeSystem;
 use ide\systems\ProjectSystem;
 
 /**
@@ -21,9 +22,7 @@ class CloseProjectCommand extends AbstractProjectCommand
     public function onExecute($e = null, AbstractEditor $editor = null)
     {
         ProjectSystem::close(false);
-
-        Ide::get()->getMainForm()->hide();
-        Ide::get()->getMainWindow()->show();
+        FileSystem::_openEditor("~welcome");
     }
 
     public function withBeforeSeparator()
